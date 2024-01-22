@@ -186,40 +186,41 @@ public class RobotContainer {
   public Command getAutonomousCommandrev1() {
 
 
-    // 1. Create trajectory settings
-    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-            Constants.Auton.MAX_SPEED,
-            Constants.Auton.MAX_ACCELERATION)
-                    .setKinematics(Constants.kDriveKinematics);
+    // // 1. Create trajectory settings
+    // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+    //         Constants.Auton.MAX_SPEED,
+    //         Constants.Auton.MAX_ACCELERATION)
+    //                 .setKinematics(Constants.kDriveKinematics);
 
     
 
-    // 2. Generate trajectory
-    Trajectory PPtraj= loadPPtraj("generatedJSON");
+    // // 2. Generate trajectory
+    // Trajectory PPtraj= loadPPtraj("generatedJSON");
 
-    // 3. Define PID controllers for tracking trajectory
-    PIDController xController = new PIDController(Auton.kPXController, 0, 0);
-    PIDController yController = new PIDController(Auton.kPYController, 0, 0);
-    ProfiledPIDController thetaController = new ProfiledPIDController(
-            Auton.kPThetaController, 0, 0, Auton.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    // // 3. Define PID controllers for tracking trajectory
+    // PIDController xController = new PIDController(Auton.kPXController, 0, 0);
+    // PIDController yController = new PIDController(Auton.kPYController, 0, 0);
+    // ProfiledPIDController thetaController = new ProfiledPIDController(
+    //         Auton.kPThetaController, 0, 0, Auton.kThetaControllerConstraints);
+    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    // 4. Construct command to follow trajectory
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-            PPtraj,
-            drivebase::getPose,
-            Constants.kDriveKinematics,
-            xController,
-            yController,
-            thetaController,
-            drivebase::setModuleStates,
-            drivebase);
+    // // 4. Construct command to follow trajectory
+    // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+    //         PPtraj,
+    //         drivebase::getPose,
+    //         Constants.kDriveKinematics,
+    //         xController,
+    //         yController,
+    //         thetaController,
+    //         drivebase::setModuleStates,
+    //         drivebase);
 
-    // 5. Add some init and wrap-up, and return everything
-    return new SequentialCommandGroup(
-            new InstantCommand(() -> drivebase.resetOdometry(PPtraj.getInitialPose())),
-            swerveControllerCommand,
-            new InstantCommand(() -> drivebase.stopModules()));
+    // // 5. Add some init and wrap-up, and return everything
+    // return new SequentialCommandGroup(
+    //         new InstantCommand(() -> drivebase.resetOdometry(PPtraj.getInitialPose())),
+    //         swerveControllerCommand,
+    //         new InstantCommand(() -> drivebase.stopModules()));
+    return null;
 }
 
   public void setDriveMode()

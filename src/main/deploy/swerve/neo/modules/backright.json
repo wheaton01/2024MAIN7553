@@ -7,12 +7,12 @@
   "drive": {
     "type": "sparkmax",
     "id": 27,
-    "canbus": null
+    "canbus": 27
   },
   "angle": {
     "type": "sparkmax",
     "id": 28,
-    "canbus": null
+    "canbus": 28
   },
 
   "encoder": {
