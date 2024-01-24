@@ -16,6 +16,7 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class armSubsystem extends SubsystemBase {
@@ -29,6 +30,7 @@ public class armSubsystem extends SubsystemBase {
   SparkPIDController mArmPID;
   CANSparkMax armMotor,winchMotor;
   DigitalInput dLowerLimit;
+  RelativeEncoder armPosEncoder;
 
   public armSubsystem(int motorID,int winchMotorID,int lowerLimitPort, int encoderPort1, int encoderPort2) {
     this.motorID = motorID;
@@ -37,17 +39,17 @@ public class armSubsystem extends SubsystemBase {
     this.lowerLimitPort = lowerLimitPort;
 
     dLowerLimit = new DigitalInput(lowerLimitPort);
-    angEncoder = new Encoder(encoderPort1,encoderPort2);
+    armPosEncoder = armMotor.getEncoder();
+    //angEncoder = new Encoder(encoderPort1,encoderPort2);
     armMotor = new CANSparkMax(motorID,CANSparkLowLevel.MotorType.kBrushless);
     armMotor = new CANSparkMax(motorID, CANSparkLowLevel.MotorType.kBrushless);
     winchMotor = new CANSparkMax(winchMotorID, CANSparkLowLevel.MotorType.kBrushless);
     
-    armMotor.getAlternateEncoder(2048);//should be okay
-
-    mArmPID = armMotor.getPIDController();
+    //armMotor.getAlternateEncoder(2048);//should be okay
+     mArmPID = armMotor.getPIDController();
     //TODO: ZERO ENCODER
   
-    angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
+    // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
     kP = 0.0004;//TODO: TUNE PID HERE
     kI = 0;
     kD = 0;
@@ -62,23 +64,27 @@ public class armSubsystem extends SubsystemBase {
     mArmPID.setIZone(kIz);
     mArmPID.setFF(kFF);
     mArmPID.setOutputRange(kMinOutput, kMaxOutput);
-
   }
 
   @Override
   public void periodic() {
     //just polls the encoder angle maybe for command stuff idk yet!
-    currentPose = angEncoder.getDistance();
-    System.out.println("CURRENT ARM POSE : "+currentPose);
+    currentPose = armPosEncoder.getPosition();
+    SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
     // This method will be called once per scheduler run
   }
   public boolean checkLowerLimit(){
     return dLowerLimit.get();
   }
   //sets the arm to a certain pose
-  public void setPose(double Position){
-    mArmPID.setReference(Position, CANSparkMax.ControlType.kPosition);
-    System.out.println("ARM SETPOINT IS NOW : "+Position);
+  double position;
+  public void setPose(double desiredPosition){
+    position = desiredPosition * 5.688888;
+    //with the encoder reading 2048 ticks per full rotation, it is 5.68... encoder ticks per degree
+
+    mArmPID.setReference(position, CANSparkMax.ControlType.kPosition);
+    SmartDashboard.putNumber("CURRENT ARM SETPOINT",position);
+
   }
   //sets winch speed, plan on using operator stick values for this
   public void setWinch(double setpoint){
