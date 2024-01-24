@@ -15,11 +15,13 @@ import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
 import frc.robot.commands.swervedrive.drivebase.zeroGyroCommand;
+import frc.robot.commands.testCommands.setServo;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.armSubsystem;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.shooterSubsytem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.testingSubsystems.servoSubsystem;
 import swervelib.SwerveDrive;
 
 import java.io.File;
@@ -28,6 +30,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -62,6 +65,8 @@ import swervelib.parser.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  //testing a servo out
+  servoSubsystem testServo = new servoSubsystem();
 //COMMENTED OUT DUE TO CAN ID ERRORS
   // intakeSubsystem sIntake  = new intakeSubsystem(Constants.Ports.kIntakeMotorID,
                                                 //  Constants.Ports.kNoteSensorID);
@@ -120,18 +125,23 @@ public class RobotContainer {
 
 
 
- private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
+    NamedCommands.registerCommand("SetServoPos", new setServo(testServo, .5));
+    NamedCommands.registerCommand("SetServoZero", new setServo(testServo, 0));
+    NamedCommands.registerCommand("SetServoFull", new setServo(testServo, 1.0));
+
     configureBindings();
-        // Build an auto chooser. This will use Commands.none() as the default option.
-         autoChooser = AutoBuilder.buildAutoChooser();
 
         // Another option that allows you to specify the default auto by its name
-        // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-    
-         SmartDashboard.putData("Auto Chooser", autoChooser);
+        //autoChooser = AutoBuilder.buildAutoChooser();
+
+        // Another option that allows you to specify the default auto by its name
+         autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+
+        SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -173,55 +183,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
 
-    public Command getAutonomousCommand() {
-      // Load the path you want to follow using its name in the GUI
-      PathPlannerPath path = PathPlannerPath.fromPathFile("New Auto");
-
-      // Create a path following command using AutoBuilder. This will also trigger event markers.
-      return AutoBuilder.followPathWithEvents(path);
-  }
-
-
-//NOT SURE IF THIS CODE BELOW WILL WORK NEEDS TESTING
-  public Command getAutonomousCommandrev1() {
-
-
-    // // 1. Create trajectory settings
-    // TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-    //         Constants.Auton.MAX_SPEED,
-    //         Constants.Auton.MAX_ACCELERATION)
-    //                 .setKinematics(Constants.kDriveKinematics);
-
-    
-
-    // // 2. Generate trajectory
-    // Trajectory PPtraj= loadPPtraj("generatedJSON");
-
-    // // 3. Define PID controllers for tracking trajectory
-    // PIDController xController = new PIDController(Auton.kPXController, 0, 0);
-    // PIDController yController = new PIDController(Auton.kPYController, 0, 0);
-    // ProfiledPIDController thetaController = new ProfiledPIDController(
-    //         Auton.kPThetaController, 0, 0, Auton.kThetaControllerConstraints);
-    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    // // 4. Construct command to follow trajectory
-    // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-    //         PPtraj,
-    //         drivebase::getPose,
-    //         Constants.kDriveKinematics,
-    //         xController,
-    //         yController,
-    //         thetaController,
-    //         drivebase::setModuleStates,
-    //         drivebase);
-
-    // // 5. Add some init and wrap-up, and return everything
-    // return new SequentialCommandGroup(
-    //         new InstantCommand(() -> drivebase.resetOdometry(PPtraj.getInitialPose())),
-    //         swerveControllerCommand,
-    //         new InstantCommand(() -> drivebase.stopModules()));
-    return null;
+   public Command getAutonomousCommand() {
+    return autoChooser.getSelected();
 }
+
 
   public void setDriveMode()
   {

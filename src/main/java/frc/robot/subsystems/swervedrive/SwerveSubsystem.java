@@ -16,6 +16,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,7 +36,11 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase
 {
-
+  //LIMELIGHT INFO!
+NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+NetworkTableEntry tx = table.getEntry("tx");
+NetworkTableEntry ty = table.getEntry("ty");
+NetworkTableEntry ta = table.getEntry("ta");
   /**
    * Swerve drive object.
    */
@@ -446,6 +453,14 @@ public class SwerveSubsystem extends SubsystemBase
   {
     return swerveDrive.getPitch();
   }
+    //LIMELIGHT DRIVE
+    public double getLimelightX(){
+      return tx.getDouble(0.0);  }
+    public double getLimelightY(){
+      return ty.getDouble(0.0);  }
+    public double getLimelightA(){
+      return ta.getDouble(0.0);
+    }
 
   /**
    * Add a fake vision reading for testing purposes.

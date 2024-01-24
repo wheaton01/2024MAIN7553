@@ -83,7 +83,9 @@ addRequirements(swerve);
 
   public void getLimelightValues()
   {
-
+    tx= swerve.getLimelightX();
+    ty = swerve.getLimelightY();
+    ta = swerve.getLimelightA();
   }
 
   public void printLimelightVal()
