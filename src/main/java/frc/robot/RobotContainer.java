@@ -194,19 +194,7 @@ public class RobotContainer {
     //drivebase.setDefaultCommand();
   }
 
-  public Trajectory loadPPtraj(String Filename){
-    Trajectory PPtrajectory = new Trajectory();
-    try{
-      Path trajPath = Filesystem.getDeployDirectory().toPath().resolve(Filename);
-      PPtrajectory = TrajectoryUtil.fromPathweaverJson(trajPath);
-      System.out.println("PATH NAME : "+ Filename + " HAS BEEN LOADED");
 
-    }catch(IOException exception){
-      System.out.println("COULD NOT FIND PATH!! "+ Filename );
-    }
-  
-  return PPtrajectory;
-}
 
 
 

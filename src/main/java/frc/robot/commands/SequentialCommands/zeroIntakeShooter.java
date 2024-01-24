@@ -27,6 +27,7 @@ public class zeroIntakeShooter extends ParallelCommandGroup {
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new setIntake(sIntake, 0, false), new setShooter(sShooter, 0, true,false));
+    addCommands(new setIntake(sIntake, 0, false), 
+    new setShooter(sShooter, 0, true,false));
   }
 }

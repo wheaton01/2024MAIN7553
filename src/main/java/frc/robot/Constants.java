@@ -104,7 +104,7 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
 
     public static final double kShooterPIDTolerance = 30;
     public static final double kArmShootingPos = 20;
-    public static final double kShootignSpeed= 3000;
+    public static final double kShootingSpeed= 3000;
     public static final double kIntakeSpeed = .8;
     public static final double kIntakeFeedSpeed = .5;
     public static final double kWaitForSpool = .1;

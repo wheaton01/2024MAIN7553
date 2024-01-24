@@ -29,6 +29,6 @@ public class fireAndFeed extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed, false), 
-    new setShooter(sShooter, Constants.subsystemConstants.kShootignSpeed, true,false));
+    new setShooter(sShooter, Constants.subsystemConstants.kShootingSpeed, true,false));
   }
 }

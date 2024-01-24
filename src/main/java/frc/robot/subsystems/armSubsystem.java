@@ -91,5 +91,6 @@ public class armSubsystem extends SubsystemBase {
   //resets encoder
   public void resetEncoder(){
     angEncoder.reset();
+
   }
 }
