@@ -99,19 +99,22 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     public static final double RROffset = 305.2;
   }
   public static final class subsystemConstants{
-    
 
+    //ARM CONSTANTS
+    public static final double kArmShootingPos           = 20;
+    public static final double kArmGroundFeedPos         = 0;
+    public static final double kArmAmpPos                = 90;
+    public static final double kArmStowPos               = 45;
+    //SHOOTING CONSTANTS
+    public static final double kShootingSpeed            = 3000;
+    public static final double kShooterPIDTolerance      = 30;
+    public static final double kWaitForSpool             = .1;
+    public static final double kWaitForShoot             = 2;
+    //INTAKE CONSTANTS
+    public static final double kIntakeSpeed              = .8;
+    public static final double kIntakeFeedSpeed          = .5;
 
-    public static final double kShooterPIDTolerance = 30;
-    public static final double kArmShootingPos = 20;
-    public static final double kShootingSpeed= 3000;
-    public static final double kIntakeSpeed = .8;
-    public static final double kIntakeFeedSpeed = .5;
-    public static final double kWaitForSpool = .1;
-    public static final double kWaitForShoot = 2;
-    
-
-
+    public static final double kIntakeZero               = 0;
 
   }
   public static final class Ports{

@@ -48,6 +48,7 @@ public class armSubsystem extends SubsystemBase {
     //armMotor.getAlternateEncoder(2048);//should be okay
      mArmPID = armMotor.getPIDController();
     //TODO: ZERO ENCODER
+    resetEncoder();
   
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
     kP = 0.0004;//TODO: TUNE PID HERE

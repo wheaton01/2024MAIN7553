@@ -10,6 +10,8 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.aprilTagSwerve;
 import frc.robot.commands.testSequence;
+import frc.robot.commands.SubsystemCommands.setArm;
+import frc.robot.commands.SubsystemCommands.setIntake;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
@@ -68,15 +70,15 @@ public class RobotContainer {
   //testing a servo out
   servoSubsystem testServo = new servoSubsystem();
 //COMMENTED OUT DUE TO CAN ID ERRORS
-  // intakeSubsystem sIntake  = new intakeSubsystem(Constants.Ports.kIntakeMotorID,
-                                                //  Constants.Ports.kNoteSensorID);
-  // shooterSubsytem sShooter = new shooterSubsytem(Constants.Ports.kTopShooterMotorID,
-                                                //  Constants.Ports.kBotShooterMotorID);
-  // armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID, 
-                                              // Constants.Ports.kWinchMotorID,
-                                              // Constants.Ports.kLowerLimitID,
-                                              // Constants.Ports.kArmEncoderID1,
-                                              // Constants.Ports.kArmEncoderID2);
+ intakeSubsystem sIntake  = new intakeSubsystem(Constants.Ports.kIntakeMotorID,
+                                                  Constants.Ports.kNoteSensorID);
+ shooterSubsytem sShooter = new shooterSubsytem(Constants.Ports.kTopShooterMotorID,
+                                                  Constants.Ports.kBotShooterMotorID);
+armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID, 
+                                               Constants.Ports.kWinchMotorID,
+                                               Constants.Ports.kLowerLimitID,
+                                               Constants.Ports.kArmEncoderID1,
+                                               Constants.Ports.kArmEncoderID2);
 // 
 // 
   //SwerveDrive swerveDrive= new SwerveParser(new File(Filesystem.getDeployDirectory(),"swerve/neo")).createSwerveDrive(Units.feetToMeters(14.5));
@@ -87,6 +89,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverPort);
+  private final CommandXboxController m_OpController = new CommandXboxController(1);
 
   TeleopDrive teleopDrive = new TeleopDrive(drivebase, 
                                 () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
@@ -161,6 +164,19 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+    
+    //Driver Bindings
+
+
+    //Operator Bindings
+    m_OpController.leftBumper().whileTrue(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed,true ));
+    //Turn On intake at kIntakeFeedSpeed until the note sensor reads true
+    m_OpController.a().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false));
+    m_OpController.b().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmShootingPos,false,false));
+    m_OpController.y().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false));
+    m_OpController.x().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false));
+
+    //SWERVE BINDINGS
 
     m_driverController.leftBumper().whileTrue(new aprilTagSwerve(drivebase, 
                                   () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
