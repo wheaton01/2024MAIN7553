@@ -4,61 +4,42 @@
 
 package frc.robot;
 
-import frc.robot.Constants.Auton;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.aprilTagSwerve;
-import frc.robot.commands.testSequence;
-import frc.robot.commands.SubsystemCommands.setArm;
-import frc.robot.commands.SubsystemCommands.setIntake;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
-import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
-import frc.robot.commands.swervedrive.drivebase.zeroGyroCommand;
-import frc.robot.commands.testCommands.setServo;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.armSubsystem;
-import frc.robot.subsystems.intakeSubsystem;
-import frc.robot.subsystems.shooterSubsytem;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.testingSubsystems.servoSubsystem;
-import swervelib.SwerveDrive;
-
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import swervelib.parser.*;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.subsystemConstants;
+import frc.robot.commands.aprilTagSwerve;
+import frc.robot.commands.SequentialCommands.fireAndFeed;
+import frc.robot.commands.SequentialCommands.spoolShooter;
+import frc.robot.commands.SubsystemCommands.setAnalogIntake;
+import frc.robot.commands.SubsystemCommands.setArm;
+import frc.robot.commands.SubsystemCommands.setIntake;
+import frc.robot.commands.SubsystemCommands.setShooter;
+import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
+import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
+import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
+import frc.robot.commands.swervedrive.drivebase.zeroGyroCommand;
+import frc.robot.commands.swervedrive.drivebase.*;
+import frc.robot.commands.testCommands.setServo;
+import frc.robot.subsystems.armSubsystem;
+import frc.robot.subsystems.intakeSubsystem;
+import frc.robot.subsystems.shooterSubsytem;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.testingSubsystems.servoSubsystem;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -68,29 +49,32 @@ import swervelib.parser.*;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   //testing a servo out
+  
+  
   servoSubsystem testServo = new servoSubsystem();
 //COMMENTED OUT DUE TO CAN ID ERRORS
  intakeSubsystem sIntake  = new intakeSubsystem(Constants.Ports.kIntakeMotorID,
                                                   Constants.Ports.kNoteSensorID);
+
  shooterSubsytem sShooter = new shooterSubsytem(Constants.Ports.kTopShooterMotorID,
                                                   Constants.Ports.kBotShooterMotorID);
+
 armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID, 
                                                Constants.Ports.kWinchMotorID,
                                                Constants.Ports.kLowerLimitID,
                                                Constants.Ports.kArmEncoderID1,
                                                Constants.Ports.kArmEncoderID2);
-// 
-// 
+
   //SwerveDrive swerveDrive= new SwerveParser(new File(Filesystem.getDeployDirectory(),"swerve/neo")).createSwerveDrive(Units.feetToMeters(14.5));
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
 
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  // Configuring Controller inputs and ports
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverPort);
   private final CommandXboxController m_OpController = new CommandXboxController(1);
-
+// Setting up swerve drive commands as a few options for what we may use
   TeleopDrive teleopDrive = new TeleopDrive(drivebase, 
                                 () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
                                   OperatorConstants.LEFT_Y_DEADBAND),
@@ -125,16 +109,34 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
                                 OperatorConstants.RIGHT_X_DEADBAND),
                                 () -> driverXbox.getRightBumper());
 
+  //this will be the default command for the intake so we can have manual controll of it                             
+  setAnalogIntake analogIntake = new setAnalogIntake(sIntake,
+  ()-> MathUtil.applyDeadband(0.3, m_OpController.getLeftTriggerAxis()),
+  ()-> MathUtil.applyDeadband(0.3, m_OpController.getRightTriggerAxis()), 
+  false);
+
 
 
 
   private final SendableChooser<Command> autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+  
+    //Some named commands to be used for auton
+    NamedCommands.registerCommand("GroundFeed", new ParallelCommandGroup(
+      new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false),
+      new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true)
+      ));
 
-    NamedCommands.registerCommand("SetServoPos", new setServo(testServo, .5));
-    NamedCommands.registerCommand("SetServoZero", new setServo(testServo, 0));
-    NamedCommands.registerCommand("SetServoFull", new setServo(testServo, 1.0));
+    NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
+      new setArm(sArm,subsystemConstants.kArmShootingPos, false, false),
+      new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false)
+    ));
+    NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( new ParallelCommandGroup(
+    new alignToAprilTag(drivebase,1,false), 
+    new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false).withTimeout(.1)), 
+    new fireAndFeed(sIntake, sShooter)
+    ));
 
     configureBindings();
 
@@ -170,10 +172,27 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
 
     //Operator Bindings
     m_OpController.leftBumper().whileTrue(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed,true ));
+    m_OpController.rightBumper().whileTrue(new SequentialCommandGroup(
+      new fireAndFeed(sIntake, sShooter).withTimeout(3.0),
+      new setIntake(sIntake, 0, false),
+      new setShooter(sShooter, 0, false, false)
+      ));
     //Turn On intake at kIntakeFeedSpeed until the note sensor reads true
-    m_OpController.a().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false));
-    m_OpController.b().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmShootingPos,false,false));
-    m_OpController.y().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false));
+    m_OpController.a().onTrue( new ParallelCommandGroup(
+    new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false),
+    new setShooter(sShooter, 0.0,false, false))
+    );
+
+    m_OpController.b().onTrue(new ParallelCommandGroup(
+      new setArm(sArm,Constants.subsystemConstants.kArmShootingPos,false,false),
+      new setShooter(sShooter, Constants.subsystemConstants.kSpoolSpeed, false, false)
+      ));
+
+    m_OpController.y().onTrue(new ParallelCommandGroup(
+      new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
+      new setShooter(sShooter, Constants.subsystemConstants.kAmpShootSpeed, false, false)
+      ));
+
     m_OpController.x().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false));
 
     //SWERVE BINDINGS
@@ -208,6 +227,10 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
   {
    drivebase.setDefaultCommand(absDrive);
     //drivebase.setDefaultCommand();
+  }
+  public void setIntakeMode()
+  {
+    sIntake.setDefaultCommand(analogIntake);
   }
 
 

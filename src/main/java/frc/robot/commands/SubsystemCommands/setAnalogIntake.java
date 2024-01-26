@@ -12,11 +12,13 @@ import frc.robot.subsystems.intakeSubsystem;
 public class setAnalogIntake extends Command {
   /** Creates a new setIntake. */
   intakeSubsystem sIntake;
-  DoubleSupplier setpoint;
+  DoubleSupplier sendForeward, sendReverse;
+  
   boolean useNoteSensor,noteSensorVal;
-  public setAnalogIntake(intakeSubsystem sIntake, DoubleSupplier setpoint,boolean useNoteSensor) {
+  public setAnalogIntake(intakeSubsystem sIntake, DoubleSupplier sendForeward,DoubleSupplier sendReverse,boolean useNoteSensor) {
     this.sIntake = sIntake;
-    this.setpoint = setpoint;
+    this.sendForeward = sendForeward;
+    this.sendReverse = sendReverse;
     this.useNoteSensor = useNoteSensor;
 
 
@@ -28,13 +30,12 @@ public class setAnalogIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    sIntake.setSpeed(setpoint.getAsDouble());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+        sIntake.setSpeed(sendForeward.getAsDouble()-sendReverse.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
