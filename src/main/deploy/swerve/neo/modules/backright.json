@@ -16,8 +16,8 @@
   },
 
   "encoder": {
-    "type": "thrifty",
-    "id": 3,
+    "type": "cancoder",
+    "id": 14,
     "canbus": null
   },
   "inverted": {

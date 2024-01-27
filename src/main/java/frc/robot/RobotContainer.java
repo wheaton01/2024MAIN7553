@@ -124,7 +124,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
   
     //Some named commands to be used for auton
     NamedCommands.registerCommand("GroundFeed", new ParallelCommandGroup(
-      new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false),
+      new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(.5),
       new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true)
       ));
 
