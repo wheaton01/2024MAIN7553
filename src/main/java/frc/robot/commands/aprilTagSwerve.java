@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.limelight;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveController;
 
@@ -45,6 +46,7 @@ addRequirements(swerve);
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    swerve.limelightOn();
     getLimelightValues();
     System.out.println("LIMELIGHT TRACKING HAS BEGUN!");
   }
@@ -85,6 +87,7 @@ addRequirements(swerve);
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    swerve.limelightOff();
     opXbox.setRumble(RumbleType.kBothRumble,0);
     driverXbox.setRumble(RumbleType.kBothRumble,0);
   }

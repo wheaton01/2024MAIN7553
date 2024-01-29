@@ -18,11 +18,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.limelight;
 
 public class armSubsystem extends SubsystemBase {
   /** Creates a new armSubsystem. */
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
-  public double setpoint,currentPose;
+  public double setpoint,currentPose, limelightTa,limelightTx,limelightTy;
   int motorID,encoderPort1,encoderPort2,winchMotorID,lowerLimitPort;
   
   //Object Creation
@@ -31,13 +32,16 @@ public class armSubsystem extends SubsystemBase {
   CANSparkMax armMotor,winchMotor;
   DigitalInput dLowerLimit;
   RelativeEncoder armPosEncoder;
-
+  limelight       armLimelight;
+  
   public armSubsystem(int motorID,int winchMotorID,int lowerLimitPort, int encoderPort1, int encoderPort2) {
+
     this.motorID = motorID;
     this.encoderPort1 = encoderPort1;
     this.encoderPort2 = encoderPort2;
     this.lowerLimitPort = lowerLimitPort;
-
+    
+    armLimelight = new limelight();
     dLowerLimit = new DigitalInput(lowerLimitPort);
     armPosEncoder = armMotor.getEncoder();
     //angEncoder = new Encoder(encoderPort1,encoderPort2);
@@ -79,11 +83,18 @@ public class armSubsystem extends SubsystemBase {
   }
   //sets the arm to a certain pose
   double position;
-  public void setPose(double desiredPosition){
+  public void setPose(double desiredPosition, boolean useLimelight){
     position = desiredPosition * 5.688888;
     //with the encoder reading 2048 ticks per full rotation, it is 5.68... encoder ticks per degree
-
+    if (!useLimelight){
     mArmPID.setReference(position, CANSparkMax.ControlType.kPosition);
+    }
+    if (useLimelight) {
+      armLimelight.getLimelightTA();
+     mArmPID.setReference(position, CANSparkMax.ControlType.kPosition);
+
+      
+    }
     SmartDashboard.putNumber("CURRENT ARM SETPOINT",position);
 
   }

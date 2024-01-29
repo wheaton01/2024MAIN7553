@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveController;
 
@@ -33,6 +34,7 @@ addRequirements(swerve);
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    swerve.limelightOn();
     getLimelightValues();
     System.out.println("LIMELIGHT TRACKING HAS BEGUN!");
   }
@@ -52,8 +54,8 @@ addRequirements(swerve);
   }
   if (Math.abs(tx)>1.5){
     swerve.drive(new Translation2d((0) * swerve.maximumSpeed, (0)* swerve.maximumSpeed),
-    (.5*tx) * controller.config.maxAngularVelocity,//Here im getting a bit fancy trying to incorporate multiple 'axes' into the alignment
-    !driveMode);//may need to do some thinking here as to how i could do both robot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
+    (Constants.Auton.swerveTurnRate*tx) * controller.config.maxAngularVelocity,
+    driveMode);
   }
 
   }
@@ -61,18 +63,19 @@ addRequirements(swerve);
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    swerve.limelightOff();
         swerve.drive(new Translation2d(
                  0,
                  0),
                  0,
-                 !driveMode);
+                 driveMode);
   
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(tx>1.5){
+    if(tx>1.){
       return false;
     }else return true;
   }

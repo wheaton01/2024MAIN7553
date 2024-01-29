@@ -466,4 +466,11 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
   }
+  public void limelightOff(){
+  swervLimelight.lightsOff();
+  }
+    public void limelightOn(){
+  swervLimelight.lightsOn();
+  }
+    
 }

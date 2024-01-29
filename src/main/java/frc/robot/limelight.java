@@ -24,4 +24,13 @@ NetworkTableEntry ta = table.getEntry("ta");
     public double getLimelightTA(){
         return table.getEntry("ta").getDouble(0);
     }
+    public void lightsOff(){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    }
+    public void lightsOn(){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0);
+    }
+    public void lightsForceOn(){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    }
 }

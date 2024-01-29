@@ -15,6 +15,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.limelight;
 import frc.robot.Constants.subsystemConstants;
 
 public class shooterSubsytem extends SubsystemBase {
@@ -25,13 +26,14 @@ public class shooterSubsytem extends SubsystemBase {
   public double currentSetpoint,shooterTolerance;
   int topMotor, botMotor;
   SparkPIDController tShooterPID,bShooterPID;
-  
+  limelight armLimelight;
   public shooterSubsytem(int topMotor, int botMotor) {
+    
     this.topMotor = topMotor;
     this.botMotor = botMotor;
     tShooter = new CANSparkMax(topMotor, CANSparkLowLevel.MotorType.kBrushless);
     bShooter = new CANSparkMax(botMotor, CANSparkLowLevel.MotorType.kBrushless);
-
+  
     bShooter.setInverted(true);
     tShooter.setInverted(false);//TODO: MAY NEED CHANGES WITH PHYSICAL ROBOT
     

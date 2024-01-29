@@ -65,6 +65,8 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
       0.395224, // Drive base radius (distance from center to furthest module) 
       new ReplanningConfig()
     );
+
+    public static final Double swerveTurnRate = .5;//Turn Rate For Swerve during auton while aligning to april tags
   }
 
   public static final class Drivebase
