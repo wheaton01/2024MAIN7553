@@ -74,7 +74,7 @@ addRequirements(swerve);
     driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
   }
   if (Math.abs(tx)>1.){
-        opXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
+    opXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
     driverXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
   }
   if(Math.abs(tx)<1.){
