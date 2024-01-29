@@ -5,7 +5,6 @@
 package frc.robot.subsystems.testingSubsystems;
 
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class servoSubsystem extends SubsystemBase {

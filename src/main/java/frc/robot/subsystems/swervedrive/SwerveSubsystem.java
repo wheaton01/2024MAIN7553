@@ -16,13 +16,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.limelight;
+
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
@@ -37,10 +36,8 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 public class SwerveSubsystem extends SubsystemBase
 {
   //LIMELIGHT INFO!
-NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-NetworkTableEntry tx = table.getEntry("tx");
-NetworkTableEntry ty = table.getEntry("ty");
-NetworkTableEntry ta = table.getEntry("ta");
+  double tx,ty,ta;
+  limelight swervLimelight = new limelight();
   /**
    * Swerve drive object.
    */
@@ -455,11 +452,11 @@ NetworkTableEntry ta = table.getEntry("ta");
   }
     //LIMELIGHT DRIVE
     public double getLimelightX(){
-      return tx.getDouble(0.0);  }
+      return swervLimelight.getLimelightTX();  }
     public double getLimelightY(){
-      return ty.getDouble(0.0);  }
+      return swervLimelight.getLimelightTY();  }
     public double getLimelightA(){
-      return ta.getDouble(0.0);
+      return swervLimelight.getLimelightTA();
     }
 
   /**
