@@ -7,6 +7,7 @@ package frc.robot.commands.SubsystemCommands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.intakeSubsystem;
 
 public class setAnalogIntake extends Command {
@@ -14,7 +15,8 @@ public class setAnalogIntake extends Command {
   intakeSubsystem sIntake;
   DoubleSupplier sendForeward, sendReverse;
   
-  boolean useNoteSensor,noteSensorVal;
+  boolean useNoteSensor;
+  int     noteSensorVal;
   public setAnalogIntake(intakeSubsystem sIntake, DoubleSupplier sendForeward,DoubleSupplier sendReverse,boolean useNoteSensor) {
     this.sIntake = sIntake;
     this.sendForeward = sendForeward;
@@ -51,7 +53,9 @@ public class setAnalogIntake extends Command {
   @Override
   public boolean isFinished() {
     if (useNoteSensor){
-      return sIntake.getNoteSensor();
+       if (noteSensorVal<Constants.subsystemConstants.noteDetectedValue){
+        return true;
+       }else return false;
     }else return false;
   }
 }

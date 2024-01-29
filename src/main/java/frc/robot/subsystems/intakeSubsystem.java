@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -17,11 +18,12 @@ public class intakeSubsystem extends SubsystemBase {
   int motorID,noteSensorPort;
   TalonFX intakeM;
   CANSparkMax intakeMC;
-  DigitalInput noteSensor;
+  //DigitalInput noteSensor;
+  AnalogInput noteSensor;
   public intakeSubsystem(int motorID, int noteSensorPort) {
     this.motorID = motorID;
     this.noteSensorPort = noteSensorPort;
-    noteSensor = new DigitalInput(noteSensorPort);
+    noteSensor = new AnalogInput(noteSensorPort);
     intakeM = new TalonFX(motorID);
     //intakeMC = new CANSparkMax(motorID, MotorType.kBrushed);//TODO: NOT SURE IF WE ARE USING SPARKMAX OR TALON
   }
@@ -35,7 +37,7 @@ public class intakeSubsystem extends SubsystemBase {
   public void setSpeed(double setpoint){
     intakeM.set(ControlMode.PercentOutput, setpoint);
   }
-  public boolean getNoteSensor(){
-    return noteSensor.get();
+  public int getNoteSensorVal(){
+    return noteSensor.getValue();
   }
 }

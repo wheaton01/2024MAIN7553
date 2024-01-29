@@ -4,14 +4,17 @@
 
 package frc.robot.commands.SubsystemCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.intakeSubsystem;
 
 public class setIntake extends Command {
   /** Creates a new setIntake. */
   intakeSubsystem sIntake;
   double setpoint;
-  boolean useNoteSensor,noteSensorVal;
+  boolean useNoteSensor;
+  int     noteSensorVal;
   public setIntake(intakeSubsystem sIntake, double setpoint,boolean useNoteSensor) {
     this.sIntake = sIntake;
     this.setpoint = setpoint;
@@ -32,6 +35,8 @@ public class setIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+     noteSensorVal=sIntake.getNoteSensorVal();
+     SmartDashboard.putNumber("NoteSensorValue", noteSensorVal);
     
   }
 
@@ -48,7 +53,9 @@ public class setIntake extends Command {
   @Override
   public boolean isFinished() {
     if (useNoteSensor){
-      return sIntake.getNoteSensor();
+       if (noteSensorVal<Constants.subsystemConstants.noteDetectedValue){
+        return true;
+       }else return false;
     }else return false;
   }
 }
