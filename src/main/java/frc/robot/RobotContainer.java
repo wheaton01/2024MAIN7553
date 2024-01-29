@@ -73,6 +73,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
   // Configuring Controller inputs and ports
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverPort);
+  XboxController opXbox = new XboxController(OperatorConstants.kDriverPort);  
   private final CommandXboxController m_OpController = new CommandXboxController(1);
 // Setting up swerve drive commands as a few options for what we may use
   TeleopDrive teleopDrive = new TeleopDrive(drivebase, 
@@ -100,14 +101,14 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
                                 OperatorConstants.RIGHT_X_DEADBAND) );
                             
                               //LIMELIGHT DRIVE
-  aprilTagSwerve limelightSwerve = new aprilTagSwerve(drivebase, 
-                                () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
-                                OperatorConstants.LEFT_Y_DEADBAND),
-                                () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
-                                OperatorConstants.LEFT_X_DEADBAND),
-                                () -> MathUtil.applyDeadband(driverXbox.getRightX(),
-                                OperatorConstants.RIGHT_X_DEADBAND),
-                                () -> driverXbox.getRightBumper());
+  // aprilTagSwerve limelightSwerve = new aprilTagSwerve(drivebase, 
+  //                               () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
+  //                               OperatorConstants.LEFT_Y_DEADBAND),
+  //                               () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
+  //                               OperatorConstants.LEFT_X_DEADBAND),
+  //                               () -> MathUtil.applyDeadband(driverXbox.getRightX(),
+  //                               OperatorConstants.RIGHT_X_DEADBAND),
+  //                               () -> driverXbox.getRightBumper());
 
   //this will be the default command for the intake so we can have manual controll of it                             
   setAnalogIntake analogIntake = new setAnalogIntake(sIntake,
@@ -204,7 +205,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
                                    OperatorConstants.LEFT_X_DEADBAND),
                                   () -> MathUtil.applyDeadband(driverXbox.getRightX(),
                                    OperatorConstants.RIGHT_X_DEADBAND),
-                                  () -> driverXbox.getRightBumper()));
+                                  () -> driverXbox.getRightBumper(),driverXbox,opXbox));
 
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));

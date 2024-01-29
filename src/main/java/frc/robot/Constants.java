@@ -78,6 +78,9 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     public static final double FLOffset = 346.5;
     public static final double RLOffset = 302.4;
     public static final double RROffset = 305.2;
+
+
+    public static final Double limelightSpeed = .5;
   }
 
   public static class OperatorConstants

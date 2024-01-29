@@ -8,9 +8,13 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveController;
 
@@ -23,10 +27,13 @@ public class aprilTagSwerve extends Command {
   BooleanSupplier driveMode;
 SwerveSubsystem swerve;
 SwerveController controller;
+XboxController driverXbox, opXbox;
 
 public aprilTagSwerve(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier omega,
-BooleanSupplier driveMode)
+BooleanSupplier driveMode, XboxController driverXbox, XboxController opXbox)
 {
+this.driverXbox = driverXbox;
+this.opXbox     = opXbox;
 this.swerve = swerve;
 this.vX = vX;
 this.vY = vY;
@@ -59,19 +66,30 @@ addRequirements(swerve);
     if (Math.abs(tx)<1.5){
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
                  angVelocity * controller.config.maxAngularVelocity,
-                 !driveMode.getAsBoolean());
+                 driveMode.getAsBoolean());
   }
-  if (Math.abs(tx)>1.5){
-    swerve.drive(new Translation2d(xVelocity+(.05*ta*(.5*ta)) * swerve.maximumSpeed, yVelocity +(.05*ty*(.5*tx))* swerve.maximumSpeed),
-    angVelocity+(.05*tx*(.01*ta)) * controller.config.maxAngularVelocity,//Here im getting a bit fancy trying to incorporate multiple 'axes' into the alignment
+  if (Math.abs(tx)>1.){
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity* swerve.maximumSpeed),
+    angVelocity+(Constants.Drivebase.limelightSpeed*tx) * controller.config.maxAngularVelocity,//Here im getting a bit fancy trying to incorporate multiple 'axes' into the alignment
     driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
+  }
+  if (Math.abs(tx)>1.){
+        opXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
+    driverXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
+  }
+  if(Math.abs(tx)<1.){
+    opXbox.setRumble(RumbleType.kBothRumble,1.0);
+    driverXbox.setRumble(RumbleType.kBothRumble,1.0);
   }
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    opXbox.setRumble(RumbleType.kBothRumble,0);
+    driverXbox.setRumble(RumbleType.kBothRumble,0);
+  }
 
   // Returns true when the command should end.
   @Override
