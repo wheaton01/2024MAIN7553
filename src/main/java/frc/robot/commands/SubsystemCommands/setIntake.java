@@ -7,6 +7,7 @@ package frc.robot.commands.SubsystemCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.subsystemConstants;
 import frc.robot.subsystems.intakeSubsystem;
 
 public class setIntake extends Command {
@@ -29,7 +30,10 @@ public class setIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    sIntake.setSpeed(setpoint);
+    if (!useNoteSensor && noteSensorVal<subsystemConstants.noteDetectedValue){
+     sIntake.setSpeed(setpoint);
+
+    }else System.out.println("NOTE SENSOR ON AT START OF INTAKE");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
