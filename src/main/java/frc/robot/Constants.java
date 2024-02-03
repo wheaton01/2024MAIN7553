@@ -122,7 +122,7 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     public static final double kIntakeFeedSpeed          = .5;
 
     public static final double kIntakeZero               = 0;
-    public static final int noteDetectedValue            = 150;
+    public static final int kNoteDetectedValue           = 150;
 
   }
   public static final class Ports{

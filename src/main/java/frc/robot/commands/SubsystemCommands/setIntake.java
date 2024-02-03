@@ -30,10 +30,15 @@ public class setIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (!useNoteSensor && noteSensorVal<subsystemConstants.noteDetectedValue){
+    if (useNoteSensor && noteSensorVal>subsystemConstants.kNoteDetectedValue){
      sIntake.setSpeed(setpoint);
 
-    }else System.out.println("NOTE SENSOR ON AT START OF INTAKE");
+    }else if(!useNoteSensor){
+           sIntake.setSpeed(setpoint);
+    }else {
+      sIntake.setSpeed(0);
+      System.out.println("NOTE SENSOR ON AT START OF INTAKE");
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,7 +62,7 @@ public class setIntake extends Command {
   @Override
   public boolean isFinished() {
     if (useNoteSensor){
-       if (noteSensorVal<Constants.subsystemConstants.noteDetectedValue){
+       if (noteSensorVal>Constants.subsystemConstants.kNoteDetectedValue){
         return true;
        }else return false;
     }else return false;
