@@ -53,7 +53,7 @@ public class setAnalogIntake extends Command {
   @Override
   public boolean isFinished() {
     if (useNoteSensor){
-       if (noteSensorVal<Constants.subsystemConstants.noteDetectedValue){
+       if (noteSensorVal<Constants.subsystemConstants.kNoteDetectedValue){
         return true;
        }else return false;
     }else return false;
