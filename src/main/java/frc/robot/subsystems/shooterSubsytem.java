@@ -84,10 +84,10 @@ public class shooterSubsytem extends SubsystemBase {
   }
 
 
-  public double getTopMeasurement(){
+  public double getTopVelocity(){
     return etShooter.getVelocity();
   }
-  public double getBotMeasurement(){
+  public double getBotVelocity(){
     return ebShooter.getVelocity();
   }
   public boolean inTolerance(){
@@ -103,5 +103,6 @@ public class shooterSubsytem extends SubsystemBase {
     tShooterPID.setReference(0, CANSparkMax.ControlType.kVelocity);
     currentSetpoint=0;
   }
+
 
 }

@@ -26,13 +26,12 @@ public class setArm extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    sArm.setPose(setpoint);
+    sArm.setPose(setpoint,false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentPose = sArm.getAngle();
 
   }
 
@@ -45,7 +44,7 @@ public class setArm extends Command {
   public boolean isFinished() {
     if(useLimitSwitch){
       return sArm.checkLowerLimit();
-    }else if (1>Math.abs(setpoint-currentPose)){
+    }else if (1>Math.abs(setpoint-sArm.getAngle())){
       return true;
     }else return false;
   }

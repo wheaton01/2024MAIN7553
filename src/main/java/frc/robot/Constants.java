@@ -111,9 +111,10 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     public static final double kArmAmpPos                = 90;
     public static final double kArmStowPos               = 45;
     //SHOOTING CONSTANTS
-    public static final double kShootingSpeed            = 3000;
-    public static final double kShooterPIDTolerance      = 30;
-    public static final double kSpoolSpeed               = .5;
+    public static final double kShootingSpeed            = 3500;
+    public static final double kShooterPIDTolerance      = 150;
+    public static final double kSpoolSpeed               = 2500;
+    public static final double kIdleSpeed                = 350;
     public static final double kAmpShootSpeed            = .2;
     public static final double kWaitForSpool             = .1;
     public static final double kWaitForShoot             = 2;

@@ -5,12 +5,13 @@
 package frc.robot.commands.SubsystemCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.subsystemConstants;
 import frc.robot.subsystems.shooterSubsytem;
 
 public class setShooter extends Command {
   /** Creates a new setShooter. */
   shooterSubsytem sShooter;
-  double setpoint;
+  double setpoint, botVelocity, topVelocity;
   boolean turnOff;
   public setShooter(shooterSubsytem sShooter, double setpoint, boolean turnOff, boolean useLimelight) {
     this.sShooter = sShooter;
@@ -43,6 +44,10 @@ public class setShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    if (Math.abs(setpoint-Math.abs(sShooter.getTopVelocity()))>subsystemConstants.kShooterPIDTolerance 
+    && Math.abs(setpoint-Math.abs(sShooter.getBotVelocity()))<subsystemConstants.kShooterPIDTolerance){
+      System.out.println("Shooter At Speed");
+      return true;
+    }else return false;
   }
 }

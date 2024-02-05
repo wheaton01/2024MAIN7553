@@ -126,7 +126,8 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
     //Some named commands to be used for auton
     NamedCommands.registerCommand("GroundFeed", new ParallelCommandGroup(
       new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(.5),
-      new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true)
+      new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true),
+      new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
       ));
 
     NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
@@ -135,7 +136,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
     ));
     NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( new ParallelCommandGroup(
     new alignToAprilTag(drivebase,1,false), 
-    new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false).withTimeout(.1)), 
+    new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false).withTimeout(.05)), 
     new fireAndFeed(sIntake, sShooter)
     ));
 
@@ -181,7 +182,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
     //Turn On intake at kIntakeFeedSpeed until the note sensor reads true
     m_OpController.a().onTrue( new ParallelCommandGroup(
     new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false),
-    new setShooter(sShooter, 0.0,false, false))
+    new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
     );
 
     m_OpController.b().onTrue(new ParallelCommandGroup(
