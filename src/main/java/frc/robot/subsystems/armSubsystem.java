@@ -14,6 +14,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,12 +29,11 @@ public class armSubsystem extends SubsystemBase {
   
   //Object Creation
   Encoder angEncoder;
-  SparkPIDController mArmPID;
   CANSparkMax armMotor,winchMotor;
   DigitalInput dLowerLimit;
   RelativeEncoder armPosEncoder;
   limelight       armLimelight;
-  
+  PIDController   armPID;
   public armSubsystem(int motorID,int winchMotorID,int lowerLimitPort, int encoderPort1, int encoderPort2) {
 
     this.motorID = motorID;
@@ -46,11 +46,9 @@ public class armSubsystem extends SubsystemBase {
     armPosEncoder = armMotor.getEncoder();
     //angEncoder = new Encoder(encoderPort1,encoderPort2);
     armMotor = new CANSparkMax(motorID,CANSparkLowLevel.MotorType.kBrushless);
-    armMotor = new CANSparkMax(motorID, CANSparkLowLevel.MotorType.kBrushless);
     winchMotor = new CANSparkMax(winchMotorID, CANSparkLowLevel.MotorType.kBrushless);
     
     //armMotor.getAlternateEncoder(2048);//should be okay
-     mArmPID = armMotor.getPIDController();
     //TODO: ZERO ENCODER
     resetEncoder();
   
@@ -63,19 +61,22 @@ public class armSubsystem extends SubsystemBase {
     kMaxOutput = 1;
     kMinOutput = -1;
 
-    mArmPID.setP(kP);
-    mArmPID.setI(kI);
-    mArmPID.setD(kD);
-    mArmPID.setIZone(kIz);
-    mArmPID.setFF(kFF);
-    mArmPID.setOutputRange(kMinOutput, kMaxOutput);
+    angEncoder.setDistancePerPulse(360.0/2048.0);
+
+    armPID.setP(kP);
+    armPID.setI(kI);
+    armPID.setD(kD);
+    armPID.setIZone(kIz);
+    armPID.setTolerance(5);
   }
 
   @Override
   public void periodic() {
     //just polls the encoder angle maybe for command stuff idk yet!
-    currentPose = armPosEncoder.getPosition();
+    currentPose = angEncoder.getDistance();
+    armMotor.set(armPID.calculate(getAngle(),setpoint));
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
+
     // This method will be called once per scheduler run
   }
   public boolean checkLowerLimit(){
@@ -84,17 +85,9 @@ public class armSubsystem extends SubsystemBase {
   //sets the arm to a certain pose
   double position;
   public void setPose(double desiredPosition, boolean useLimelight){
-    position = desiredPosition * 5.688888;
+ 
     //with the encoder reading 2048 ticks per full rotation, it is 5.68... encoder ticks per degree
-    if (!useLimelight){
-    mArmPID.setReference(position, CANSparkMax.ControlType.kPosition);
-    }
-    if (useLimelight) {
-      armLimelight.getLimelightTA();
-     mArmPID.setReference(position, CANSparkMax.ControlType.kPosition);
-
-      
-    }
+      setpoint = desiredPosition;
     SmartDashboard.putNumber("CURRENT ARM SETPOINT",position);
 
   }
