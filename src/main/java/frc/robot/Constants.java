@@ -133,8 +133,8 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     public static final int kTopShooterMotorID     = 10;
     public static final int kBotShooterMotorID     = 9;
     public static final int kWinchMotorID          = 12;
-    public static final int kArmEncoderID1         = 0;
-    public static final int kArmEncoderID2         = 1;
+    public static final int kArmEncoderID1         = 1;
+    public static final int kArmEncoderID2         = 2;
     //likely using attached motor controller encoder port
     public static final int kNoteSensorID          = 1;
     //will end up being an analog input

@@ -31,7 +31,7 @@ public class armSubsystem extends SubsystemBase {
   Encoder angEncoder;
   CANSparkMax armMotor,winchMotor;
   DigitalInput dLowerLimit;
-  RelativeEncoder armPosEncoder;
+  Encoder armPosEncoder;
   limelight       armLimelight;
   PIDController   armPID;
   public armSubsystem(int motorID,int winchMotorID,int lowerLimitPort, int encoderPort1, int encoderPort2) {
@@ -43,7 +43,7 @@ public class armSubsystem extends SubsystemBase {
     
     armLimelight = new limelight();
     dLowerLimit = new DigitalInput(lowerLimitPort);
-    armPosEncoder = armMotor.getEncoder();
+    armPosEncoder = new Encoder(encoderPort1,encoderPort2);
     //angEncoder = new Encoder(encoderPort1,encoderPort2);
     armMotor = new CANSparkMax(motorID,CANSparkLowLevel.MotorType.kBrushless);
     winchMotor = new CANSparkMax(winchMotorID, CANSparkLowLevel.MotorType.kBrushless);
