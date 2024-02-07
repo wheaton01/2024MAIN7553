@@ -112,8 +112,8 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
 
   //this will be the default command for the intake so we can have manual controll of it                             
   setAnalogIntake analogIntake = new setAnalogIntake(sIntake,
-  ()-> MathUtil.applyDeadband(0.3, m_OpController.getLeftTriggerAxis()),
-  ()-> MathUtil.applyDeadband(0.3, m_OpController.getRightTriggerAxis()), 
+  ()-> MathUtil.applyDeadband(0.1, m_OpController.getLeftTriggerAxis()),
+  ()-> MathUtil.applyDeadband(0.1, m_OpController.getRightTriggerAxis()), 
   false);
 
 
@@ -174,17 +174,17 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
 
     //Operator Bindings
     m_OpController.leftBumper().whileTrue(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed,true ));
-    m_OpController.rightBumper().whileTrue(new SequentialCommandGroup(
+    m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
       new fireAndFeed(sIntake, sShooter).withTimeout(3.0),
-      new setIntake(sIntake, 0, false),
-      new setShooter(sShooter, 0, false, false)
+      new setIntake(sIntake, 0, false).withTimeout(.1),
+      new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
       ));
     //Turn On intake at kIntakeFeedSpeed until the note sensor reads true
     m_OpController.a().onTrue( new ParallelCommandGroup(
     new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false),
     new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
     );
-
+    m_OpController.povDown().onTrue(new setShooter(sShooter, 0, false, false));
     m_OpController.b().onTrue(new ParallelCommandGroup(
       new setArm(sArm,Constants.subsystemConstants.kArmShootingPos,false,false),
       new setShooter(sShooter, Constants.subsystemConstants.kSpoolSpeed, false, false)

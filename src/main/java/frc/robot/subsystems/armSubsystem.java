@@ -31,7 +31,6 @@ public class armSubsystem extends SubsystemBase {
   Encoder angEncoder;
   CANSparkMax armMotor,winchMotor;
   DigitalInput dLowerLimit;
-  Encoder armPosEncoder;
   limelight       armLimelight;
   PIDController   armPID;
   public armSubsystem(int motorID,int winchMotorID,int lowerLimitPort, int encoderPort1, int encoderPort2) {
@@ -43,29 +42,26 @@ public class armSubsystem extends SubsystemBase {
     
     armLimelight = new limelight();
     dLowerLimit = new DigitalInput(lowerLimitPort);
-    armPosEncoder = new Encoder(encoderPort1,encoderPort2);
-    //angEncoder = new Encoder(encoderPort1,encoderPort2);
+    angEncoder = new Encoder(encoderPort1,encoderPort2);
     armMotor = new CANSparkMax(motorID,CANSparkLowLevel.MotorType.kBrushless);
     winchMotor = new CANSparkMax(winchMotorID, CANSparkLowLevel.MotorType.kBrushless);
-    
     //armMotor.getAlternateEncoder(2048);//should be okay
     //TODO: ZERO ENCODER
     resetEncoder();
-  
+    
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
-    kP = 0.0004;//TODO: TUNE PID HERE
+    kP = 0.015;//TODO: TUNE PID HERE
     kI = 0;
     kD = 0;
     kIz = 0;
     kFF = 0.00017; // .000015
     kMaxOutput = 1;
     kMinOutput = -1;
+    armPID = new PIDController(kP, kI,kD);
 
     angEncoder.setDistancePerPulse(360.0/2048.0);
 
-    armPID.setP(kP);
-    armPID.setI(kI);
-    armPID.setD(kD);
+
     armPID.setIZone(kIz);
     armPID.setTolerance(5);
   }
@@ -74,7 +70,9 @@ public class armSubsystem extends SubsystemBase {
   public void periodic() {
     //just polls the encoder angle maybe for command stuff idk yet!
     currentPose = angEncoder.getDistance();
-    armMotor.set(armPID.calculate(getAngle(),setpoint));
+    armMotor.set(-armPID.calculate(-getAngle(),setpoint));
+    SmartDashboard.putNumber("Desired Pose",setpoint);
+
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
 
     // This method will be called once per scheduler run

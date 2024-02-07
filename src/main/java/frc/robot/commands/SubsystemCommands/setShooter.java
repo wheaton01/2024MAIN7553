@@ -37,7 +37,7 @@ public class setShooter extends Command {
   @Override
   public void end(boolean interrupted) {
     if (turnOff){
-      sShooter.setSpeed(0);
+      sShooter.setSpeed(subsystemConstants.kIdleSpeed);
     }
   }
 

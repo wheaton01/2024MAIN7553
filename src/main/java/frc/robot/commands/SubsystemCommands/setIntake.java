@@ -36,7 +36,7 @@ public class setIntake extends Command {
     }else if(!useNoteSensor){
            sIntake.setSpeed(setpoint);
     }else {
-      sIntake.setSpeed(0);
+      sIntake.setSpeed(setpoint);
       System.out.println("NOTE SENSOR ON AT START OF INTAKE");
     }
   }
@@ -63,6 +63,7 @@ public class setIntake extends Command {
   public boolean isFinished() {
     if (useNoteSensor){
        if (noteSensorVal>Constants.subsystemConstants.kNoteDetectedValue){
+        System.out.println("Stopped Due to Note Sensor");
         return true;
        }else return false;
     }else return false;

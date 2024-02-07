@@ -43,17 +43,14 @@ public class setAnalogIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(useNoteSensor){
-      sIntake.setSpeed(0);
-      System.out.println("NOTE SENSOR ON, INTAKE OFF");
-    }
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if (useNoteSensor){
-       if (noteSensorVal<Constants.subsystemConstants.kNoteDetectedValue){
+       if (noteSensorVal>Constants.subsystemConstants.kNoteDetectedValue){
         return true;
        }else return false;
     }else return false;

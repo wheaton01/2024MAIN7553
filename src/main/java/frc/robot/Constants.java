@@ -106,37 +106,37 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
   public static final class subsystemConstants{
 
     //ARM CONSTANTS
-    public static final double kArmShootingPos           = 20;
-    public static final double kArmGroundFeedPos         = 0;
-    public static final double kArmAmpPos                = 90;
-    public static final double kArmStowPos               = 45;
+    public static final double kArmShootingPos           = 60;
+    public static final double kArmGroundFeedPos         = 91.2;
+    public static final double kArmAmpPos                = 0;
+    public static final double kArmStowPos               = 20;
     //SHOOTING CONSTANTS
     public static final double kShootingSpeed            = 3500;
     public static final double kShooterPIDTolerance      = 150;
     public static final double kSpoolSpeed               = 2500;
-    public static final double kIdleSpeed                = 350;
+    public static final double kIdleSpeed                = 500;
     public static final double kAmpShootSpeed            = .2;
     public static final double kWaitForSpool             = .1;
     public static final double kWaitForShoot             = 2;
     //INTAKE CONSTANTS
-    public static final double kIntakeSpeed              = .8;
+    public static final double kIntakeSpeed              = 1.;
     public static final double kIntakeFeedSpeed          = .5;
 
     public static final double kIntakeZero               = 0;
-    public static final int kNoteDetectedValue           = 150;
+    public static final int kNoteDetectedValue           = 1300;
 
   }
   public static final class Ports{
     //TODO: GET CORRECT MOTOR IDS
     public static final int kArmMotorID            = 11;
     public static final int kIntakeMotorID         = 13;
-    public static final int kTopShooterMotorID     = 10;
-    public static final int kBotShooterMotorID     = 9;
+    public static final int kTopShooterMotorID     = 9;
+    public static final int kBotShooterMotorID     = 10;
     public static final int kWinchMotorID          = 12;
     public static final int kArmEncoderID1         = 1;
     public static final int kArmEncoderID2         = 2;
     //likely using attached motor controller encoder port
-    public static final int kNoteSensorID          = 1;
+    public static final int kNoteSensorID          = 0;
     //will end up being an analog input
     public static final int kLowerLimitID          = 0;
   

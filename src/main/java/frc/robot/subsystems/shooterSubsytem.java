@@ -34,7 +34,7 @@ public class shooterSubsytem extends SubsystemBase {
     tShooter = new CANSparkMax(topMotor, CANSparkLowLevel.MotorType.kBrushless);
     bShooter = new CANSparkMax(botMotor, CANSparkLowLevel.MotorType.kBrushless);
   
-    bShooter.setInverted(true);
+    bShooter.setInverted(false);
     tShooter.setInverted(false);//TODO: MAY NEED CHANGES WITH PHYSICAL ROBOT
     
     etShooter = tShooter.getEncoder();
