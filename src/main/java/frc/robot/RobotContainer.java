@@ -134,9 +134,10 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
       new setArm(sArm,subsystemConstants.kArmShootingPos, false, false),
       new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false)
     ));
-    NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( new ParallelCommandGroup(
+    NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( 
+      new ParallelCommandGroup(
     new alignToAprilTag(drivebase,1,false), 
-    new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false).withTimeout(.05)), 
+    new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false)).withTimeout(.5), 
     new fireAndFeed(sIntake, sShooter)
     ));
 
