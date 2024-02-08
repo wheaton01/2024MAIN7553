@@ -50,20 +50,20 @@ public class armSubsystem extends SubsystemBase {
     resetEncoder();
     
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
-    kP = 0.015;//TODO: TUNE PID HERE
+    kP = 0.03;//TODO: TUNE PID HERE
     kI = 0;
     kD = 0;
     kIz = 0;
     kFF = 0.00017; // .000015
     kMaxOutput = 1;
-    kMinOutput = -1;
+    kMinOutput = -.05;
     armPID = new PIDController(kP, kI,kD);
-
+    
     angEncoder.setDistancePerPulse(360.0/2048.0);
 
 
     armPID.setIZone(kIz);
-    armPID.setTolerance(5);
+    armPID.setTolerance(.5);
   }
 
   @Override
