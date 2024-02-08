@@ -30,7 +30,7 @@ public class setIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (useNoteSensor && noteSensorVal>subsystemConstants.kNoteDetectedValue){
+       if (noteSensorVal<Constants.subsystemConstants.kNoteDetectedValueUL && noteSensorVal>subsystemConstants.kNoteDetectedValueLL && noteSensorVal>subsystemConstants.kNoteDetectedValueLL){
      sIntake.setSpeed(setpoint);
 
     }else if(!useNoteSensor){
@@ -62,7 +62,7 @@ public class setIntake extends Command {
   @Override
   public boolean isFinished() {
     if (useNoteSensor){
-       if (noteSensorVal>Constants.subsystemConstants.kNoteDetectedValue){
+       if (noteSensorVal<Constants.subsystemConstants.kNoteDetectedValueUL && noteSensorVal>subsystemConstants.kNoteDetectedValueLL){
         System.out.println("Stopped Due to Note Sensor");
         return true;
        }else return false;

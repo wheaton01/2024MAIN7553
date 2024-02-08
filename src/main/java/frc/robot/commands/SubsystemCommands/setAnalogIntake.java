@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.subsystemConstants;
 import frc.robot.subsystems.intakeSubsystem;
 
 public class setAnalogIntake extends Command {
@@ -50,7 +51,7 @@ public class setAnalogIntake extends Command {
   @Override
   public boolean isFinished() {
     if (useNoteSensor){
-       if (noteSensorVal>Constants.subsystemConstants.kNoteDetectedValue){
+       if (noteSensorVal>Constants.subsystemConstants.kNoteDetectedValueUL && noteSensorVal<subsystemConstants.kNoteDetectedValueLL){
         return true;
        }else return false;
     }else return false;

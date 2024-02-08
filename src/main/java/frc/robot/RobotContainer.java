@@ -128,7 +128,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
       new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(.5),
       new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true),
       new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
-      ));
+      ).withTimeout(0));//Timeout is temp to test auto
 
     NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
       new setArm(sArm,subsystemConstants.kArmShootingPos, false, false),
@@ -139,7 +139,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
     new alignToAprilTag(drivebase,1,false), 
     new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false)).withTimeout(.5), 
     new fireAndFeed(sIntake, sShooter)
-    ));
+    ).withTimeout(3));
 
     configureBindings();
 
