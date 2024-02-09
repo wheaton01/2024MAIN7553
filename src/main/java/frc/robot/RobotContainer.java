@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.Ports;
 import frc.robot.Constants.subsystemConstants;
 import frc.robot.commands.aprilTagSwerve;
 import frc.robot.commands.setHaptics;
@@ -42,6 +43,7 @@ import frc.robot.subsystems.armSubsystem;
 import frc.robot.subsystems.controllerHaptics;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.shooterSubsytem;
+import frc.robot.subsystems.winchSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.testingSubsystems.servoSubsystem;
 /**
@@ -56,20 +58,17 @@ public class RobotContainer {
   
   
   servoSubsystem testServo = new servoSubsystem();
-//COMMENTED OUT DUE TO CAN ID ERRORS
- intakeSubsystem sIntake  = new intakeSubsystem(Constants.Ports.kIntakeMotorID,
+  intakeSubsystem sIntake  = new intakeSubsystem(Constants.Ports.kIntakeMotorID,
                                                   Constants.Ports.kNoteSensorID);
 
- shooterSubsytem sShooter = new shooterSubsytem(Constants.Ports.kTopShooterMotorID,
+  shooterSubsytem sShooter = new shooterSubsytem(Constants.Ports.kTopShooterMotorID,
                                                   Constants.Ports.kBotShooterMotorID);
 
-armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID, 
-                                               Constants.Ports.kWinchMotorID,
+  armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
                                                Constants.Ports.kLowerLimitID,
                                                Constants.Ports.kArmEncoderID1,
                                                Constants.Ports.kArmEncoderID2);
-
-
+  winchSubsystem sWinch   = new winchSubsystem(Ports.kWinchMotorID);
   //SwerveDrive swerveDrive= new SwerveParser(new File(Filesystem.getDeployDirectory(),"swerve/neo")).createSwerveDrive(Units.feetToMeters(14.5));
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
@@ -122,9 +121,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
   ()-> MathUtil.applyDeadband(0.1, m_OpController.getLeftTriggerAxis()),
   ()-> MathUtil.applyDeadband(0.1, m_OpController.getRightTriggerAxis()), 
   false);
-  setWinch setWinch = new setWinch(sArm, 
-  opXbox.getRawButton(5),
-  opXbox.getRawButton(6));
+
 
 
 
@@ -206,6 +203,10 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
       new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
       new setShooter(sShooter, Constants.subsystemConstants.kAmpShootSpeed, false, false)
       ));
+    m_OpController.povLeft().whileTrue(new setWinch(sWinch,1.0));
+    m_OpController.povRight().whileTrue(new setWinch(sWinch,-1.0));
+
+
 
     m_OpController.x().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false));
 

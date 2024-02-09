@@ -29,11 +29,11 @@ public class armSubsystem extends SubsystemBase {
   
   //Object Creation
   Encoder angEncoder;
-  CANSparkMax armMotor,winchMotor;
+  CANSparkMax armMotor;
   DigitalInput dLowerLimit;
   limelight       armLimelight;
   PIDController   armPID;
-  public armSubsystem(int motorID,int winchMotorID,int lowerLimitPort, int encoderPort1, int encoderPort2) {
+  public armSubsystem(int motorID, int lowerLimitPort, int encoderPort1, int encoderPort2) {
 
     this.motorID = motorID;
     this.encoderPort1 = encoderPort1;
@@ -44,7 +44,6 @@ public class armSubsystem extends SubsystemBase {
     dLowerLimit = new DigitalInput(lowerLimitPort);
     angEncoder = new Encoder(encoderPort1,encoderPort2);
     armMotor = new CANSparkMax(motorID,CANSparkLowLevel.MotorType.kBrushless);
-    winchMotor = new CANSparkMax(winchMotorID, CANSparkLowLevel.MotorType.kBrushless);
     //armMotor.getAlternateEncoder(2048);//should be okay
     //TODO: ZERO ENCODER
     resetEncoder();
@@ -90,9 +89,7 @@ public class armSubsystem extends SubsystemBase {
 
   }
   //sets winch speed, plan on using operator stick values for this
-  public void setWinch(double setpoint){
-    winchMotor.set(setpoint);
-  }
+
   //gets current angle 
   public double getAngle(){
     return angEncoder.getDistance();
