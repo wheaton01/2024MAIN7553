@@ -193,7 +193,7 @@ public class RobotContainer {
     new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false),
     new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
     );
-    m_OpController.povDown().onTrue(new setShooter(sShooter, 0, false, false));
+    m_OpController.povLeft().onTrue(new setShooter(sShooter, 0, false, false));
     m_OpController.b().onTrue(new ParallelCommandGroup(
       new setArm(sArm,Constants.subsystemConstants.kArmShootingPos,false,false),
       new setShooter(sShooter, Constants.subsystemConstants.kSpoolSpeed, false, false)
@@ -203,10 +203,8 @@ public class RobotContainer {
       new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
       new setShooter(sShooter, Constants.subsystemConstants.kAmpShootSpeed, false, false)
       ));
-    m_OpController.povLeft().whileTrue(new setWinch(sWinch,1.0));
-    m_OpController.povRight().whileTrue(new setWinch(sWinch,-1.0));
-
-
+    m_OpController.povUp().whileTrue(new setWinch(sWinch,1.0));
+    m_OpController.povDown().whileTrue(new setWinch(sWinch,-1.0));
 
     m_OpController.x().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false));
 
