@@ -25,6 +25,7 @@ public class winchSubsystem extends SubsystemBase {
   }
 
   public void setWinch(double setpoint){
+    System.out.println("new Winch Setpoint"+setpoint);
     winchMotor.set(setpoint);
   }
 }

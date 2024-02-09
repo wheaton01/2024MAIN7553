@@ -77,7 +77,7 @@ public class RobotContainer {
   // Configuring Controller inputs and ports
   private final CommandXboxController m_driverController = new CommandXboxController(0);
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverPort);
-  XboxController opXbox = new XboxController(OperatorConstants.kDriverPort);  
+  XboxController opXbox = new XboxController(OperatorConstants.kOperatorPort);  
   private final CommandXboxController m_OpController = new CommandXboxController(1);
     controllerHaptics cHaptics  = new controllerHaptics(driverXbox,opXbox);
 // Setting up swerve drive commands as a few options for what we may use
@@ -179,14 +179,17 @@ public class RobotContainer {
     
     //Driver Bindings
 
-
+    
     //Operator Bindings
-    m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed,true ),
+    m_driverController.rightBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true ),
+    new setHaptics(cHaptics, 60).withTimeout(.2)));
+    m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true ),
     new setHaptics(cHaptics, 60).withTimeout(.2)));
     m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
-      new fireAndFeed(sIntake, sShooter).withTimeout(3.0),
-      new setIntake(sIntake, 0, false).withTimeout(.1),
-      new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
+    new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false),   
+    new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false).withTimeout(1.0),
+    new setIntake(sIntake, 0, false).withTimeout(.01),
+    new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
       ));
     //Turn On intake at kIntakeFeedSpeed until the note sensor reads true
     m_OpController.a().onTrue( new ParallelCommandGroup(
@@ -201,10 +204,11 @@ public class RobotContainer {
 
     m_OpController.y().onTrue(new ParallelCommandGroup(
       new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
-      new setShooter(sShooter, Constants.subsystemConstants.kAmpShootSpeed, false, false)
+      new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
       ));
-    m_OpController.povUp().whileTrue(new setWinch(sWinch,1.0));
-    m_OpController.povDown().whileTrue(new setWinch(sWinch,-1.0));
+    m_OpController.povUp().onTrue(new setWinch(sWinch,1.0));
+    m_OpController.povDown().onTrue(new setWinch(sWinch,-1.0));
+    m_OpController.povCenter().onTrue(new setWinch(sWinch, 0));
 
     m_OpController.x().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false));
 
@@ -221,6 +225,8 @@ public class RobotContainer {
 
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));
+
+
     
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }

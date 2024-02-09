@@ -27,11 +27,15 @@ public class setShooter extends Command {
   @Override
   public void initialize() {
     sShooter.setSpeed(setpoint);
+    System.out.println("new Setpoint"+setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+
+
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -44,8 +48,7 @@ public class setShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(setpoint-Math.abs(sShooter.getTopVelocity()))>subsystemConstants.kShooterPIDTolerance 
-    && Math.abs(setpoint-Math.abs(sShooter.getBotVelocity()))<subsystemConstants.kShooterPIDTolerance){
+    if (setpoint-subsystemConstants.kShooterPIDTolerance<sShooter.getTopVelocity()){
       System.out.println("Shooter At Speed");
       return true;
     }else return false;

@@ -17,7 +17,8 @@ public class setWinch extends Command {
   winchSubsystem sWinch;
   public setWinch(winchSubsystem sWinch, double setpoint) {
 
-    this.sWinch          = sWinch;
+    this.sWinch= sWinch;
+    this.setpoint=setpoint;
     
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(sWinch);
@@ -38,7 +39,6 @@ public class setWinch extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    sWinch.setWinch(0);
   }
 
   // Returns true when the command should end.

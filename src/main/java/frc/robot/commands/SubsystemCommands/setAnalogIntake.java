@@ -38,7 +38,7 @@ public class setAnalogIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        sIntake.setSpeed(sendForeward.getAsDouble()-sendReverse.getAsDouble());
+        sIntake.setSpeed(10*(sendForeward.getAsDouble()-sendReverse.getAsDouble()));
   }
 
   // Called once the command ends or is interrupted.

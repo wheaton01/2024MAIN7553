@@ -44,8 +44,7 @@ public class setIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     noteSensorVal=sIntake.getNoteSensorVal();
-     SmartDashboard.putNumber("NoteSensorValue", noteSensorVal);
+
     
   }
 
@@ -62,7 +61,7 @@ public class setIntake extends Command {
   @Override
   public boolean isFinished() {
     if (useNoteSensor){
-       if (noteSensorVal<Constants.subsystemConstants.kNoteDetectedValueUL && noteSensorVal>subsystemConstants.kNoteDetectedValueLL){
+       if (sIntake.getNoteSensorVal()<Constants.subsystemConstants.kNoteDetectedValueUL){
         System.out.println("Stopped Due to Note Sensor");
         return true;
        }else return false;

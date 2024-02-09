@@ -75,6 +75,7 @@ public class shooterSubsytem extends SubsystemBase {
     bShooterPID.setReference(currentSetpoint, CANSparkMax.ControlType.kVelocity);
     tShooterPID.setReference(currentSetpoint, CANSparkMax.ControlType.kVelocity);
     
+    
   }
   
   public void setSpeed(double setpoint){
