@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.subsystemConstants;
 import frc.robot.commands.aprilTagSwerve;
+import frc.robot.commands.setHaptics;
 import frc.robot.commands.SequentialCommands.fireAndFeed;
 import frc.robot.commands.SequentialCommands.spoolShooter;
 import frc.robot.commands.SubsystemCommands.setAnalogIntake;
@@ -36,6 +37,7 @@ import frc.robot.commands.swervedrive.drivebase.zeroGyroCommand;
 import frc.robot.commands.swervedrive.drivebase.*;
 import frc.robot.commands.testCommands.setServo;
 import frc.robot.subsystems.armSubsystem;
+import frc.robot.subsystems.controllerHaptics;
 import frc.robot.subsystems.intakeSubsystem;
 import frc.robot.subsystems.shooterSubsytem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -65,6 +67,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
                                                Constants.Ports.kArmEncoderID1,
                                                Constants.Ports.kArmEncoderID2);
 
+
   //SwerveDrive swerveDrive= new SwerveParser(new File(Filesystem.getDeployDirectory(),"swerve/neo")).createSwerveDrive(Units.feetToMeters(14.5));
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve/neo"));
@@ -75,7 +78,9 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
   XboxController driverXbox = new XboxController(OperatorConstants.kDriverPort);
   XboxController opXbox = new XboxController(OperatorConstants.kDriverPort);  
   private final CommandXboxController m_OpController = new CommandXboxController(1);
+    controllerHaptics cHaptics  = new controllerHaptics(driverXbox,opXbox);
 // Setting up swerve drive commands as a few options for what we may use
+
   TeleopDrive teleopDrive = new TeleopDrive(drivebase, 
                                 () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
                                   OperatorConstants.LEFT_Y_DEADBAND),
@@ -131,7 +136,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
       ).withTimeout(0));//Timeout is temp to test auto
 
     NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
-      new setArm(sArm,subsystemConstants.kArmShootingPos, false, false),
+      new setArm(sArm,subsystemConstants.kArmShootingPos, false, false).withTimeout(.25),
       new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false)
     ));
     NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( 
@@ -174,7 +179,8 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
 
 
     //Operator Bindings
-    m_OpController.leftBumper().whileTrue(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed,true ));
+    m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed,true ),
+    new setHaptics(cHaptics, 60).withTimeout(.25)));
     m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
       new fireAndFeed(sIntake, sShooter).withTimeout(3.0),
       new setIntake(sIntake, 0, false).withTimeout(.1),
