@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,6 +31,7 @@ import frc.robot.commands.SubsystemCommands.setAnalogIntake;
 import frc.robot.commands.SubsystemCommands.setArm;
 import frc.robot.commands.SubsystemCommands.setIntake;
 import frc.robot.commands.SubsystemCommands.setShooter;
+import frc.robot.commands.SubsystemCommands.setWinch;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
@@ -120,6 +122,9 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
   ()-> MathUtil.applyDeadband(0.1, m_OpController.getLeftTriggerAxis()),
   ()-> MathUtil.applyDeadband(0.1, m_OpController.getRightTriggerAxis()), 
   false);
+  setWinch setWinch = new setWinch(sArm, 
+  opXbox.getRawButton(5),
+  opXbox.getRawButton(6));
 
 
 
@@ -180,7 +185,7 @@ armSubsystem    sArm     = new armSubsystem(Constants.Ports.kArmMotorID,
 
     //Operator Bindings
     m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed,true ),
-    new setHaptics(cHaptics, 60).withTimeout(.25)));
+    new setHaptics(cHaptics, 60).withTimeout(.2)));
     m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
       new fireAndFeed(sIntake, sShooter).withTimeout(3.0),
       new setIntake(sIntake, 0, false).withTimeout(.1),
