@@ -219,7 +219,7 @@ public class RobotContainer {
                                    OperatorConstants.LEFT_Y_DEADBAND),
                                   () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
                                    OperatorConstants.LEFT_X_DEADBAND),
-                                  () -> MathUtil.applyDeadband(driverXbox.getRightX(),
+                                  () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
                                    OperatorConstants.RIGHT_X_DEADBAND),
                                   () -> driverXbox.getRightBumper(),driverXbox,opXbox));
 

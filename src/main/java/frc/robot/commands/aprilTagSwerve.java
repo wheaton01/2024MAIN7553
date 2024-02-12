@@ -7,6 +7,7 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -21,15 +22,17 @@ public class aprilTagSwerve extends Command {
   /** Creates a new aprilTagSwerve. */
 
 
-  Double tx,ty,ta;
+  Double tx,ty,ta,kP,kI,kD,setpoint;
   DoubleSupplier vX,vY,omega;
   BooleanSupplier driveMode;
 SwerveSubsystem swerve;
 SwerveController controller;
 XboxController driverXbox, opXbox;
+PIDController thetaController;
 
 public aprilTagSwerve(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier omega,
 BooleanSupplier driveMode, XboxController driverXbox, XboxController opXbox)
+
 {
 this.driverXbox = driverXbox;
 this.opXbox     = opXbox;
@@ -39,6 +42,7 @@ this.vY = vY;
 this.omega = omega;
 this.driveMode = driveMode;
 this.controller = swerve.getSwerveController();
+
 // Use addRequirements() here to declare subsystem dependencies.
 addRequirements(swerve);
 }
@@ -46,6 +50,11 @@ addRequirements(swerve);
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    kP = .004;
+    kI= 0.0;
+    kD = 0.0;
+    setpoint=0.0;//this setpoint should be zero and calibrated using limelight itself
+   thetaController = new PIDController(kP, kI, kD);
     swerve.limelightOn();
     getLimelightValues();
     System.out.println("LIMELIGHT TRACKING HAS BEGUN!");
@@ -63,21 +72,21 @@ addRequirements(swerve);
     SmartDashboard.putNumber("omega", angVelocity);
     printLimelightVal();
     // Drive using raw values.
-    if (Math.abs(tx)<1.5){
+    if (Math.abs(ty)<1.5){
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
                  angVelocity * controller.config.maxAngularVelocity,
                  driveMode.getAsBoolean());
   }
-  if (Math.abs(tx)>1.){
+  if (Math.abs(ty)>1.){
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity* swerve.maximumSpeed),
-    angVelocity+(Constants.Drivebase.limelightSpeed*tx) * controller.config.maxAngularVelocity,//Here im getting a bit fancy trying to incorporate multiple 'axes' into the alignment
+    angVelocity+(thetaController.calculate(swerve.getLimelightY(), setpoint)) * controller.config.maxAngularVelocity,
     driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
   }
-  if (Math.abs(tx)>1.){
+  if (Math.abs(ty)>1.){
     opXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
     driverXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
   }
-  if(Math.abs(tx)<1.){
+  if(Math.abs(ty)<1.){
     opXbox.setRumble(RumbleType.kBothRumble,1.0);
     driverXbox.setRumble(RumbleType.kBothRumble,1.0);
   }
@@ -105,6 +114,9 @@ addRequirements(swerve);
     tx= swerve.getLimelightX();
     ty = swerve.getLimelightY();
     ta = swerve.getLimelightA();
+  }
+  public double getTy(){
+    return swerve.getLimelightY();
   }
 
   public void printLimelightVal()
