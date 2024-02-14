@@ -50,9 +50,9 @@ addRequirements(swerve);
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    kP = .004;
-    kI= 0.0;
-    kD = 0.0;
+    kP = .0125;
+    kI= 0.00001;
+    kD = 0.000001;
     setpoint=0.0;//this setpoint should be zero and calibrated using limelight itself
    thetaController = new PIDController(kP, kI, kD);
     swerve.limelightOn();
@@ -79,12 +79,12 @@ addRequirements(swerve);
   }
   if (Math.abs(ty)>1.){
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity* swerve.maximumSpeed),
-    angVelocity+(thetaController.calculate(swerve.getLimelightY(), setpoint)) * controller.config.maxAngularVelocity,
-    driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
+    angVelocity-(thetaController.calculate(swerve.getLimelightY(), setpoint)) * controller.config.maxAngularVelocity,
+    driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robzot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
   }
   if (Math.abs(ty)>1.){
-    opXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
-    driverXbox.setRumble(RumbleType.kBothRumble,1/.8*Math.abs(tx));
+    opXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(ty)));
+    driverXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(ty)));
   }
   if(Math.abs(ty)<1.){
     opXbox.setRumble(RumbleType.kBothRumble,1.0);

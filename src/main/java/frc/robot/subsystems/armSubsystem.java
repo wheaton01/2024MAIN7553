@@ -23,7 +23,7 @@ import frc.robot.limelight;
 
 public class armSubsystem extends SubsystemBase {
   /** Creates a new armSubsystem. */
-  public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
+  public double kP, kI, kD, kIz, kFF,kPUP,kDUP, kMaxOutput, kMinOutput, maxRPM;
   public double setpoint,currentPose, limelightTa,limelightTx,limelightTy;
   int motorID,encoderPort1,encoderPort2,winchMotorID,lowerLimitPort;
   
@@ -33,6 +33,7 @@ public class armSubsystem extends SubsystemBase {
   DigitalInput dLowerLimit;
   limelight       armLimelight;
   PIDController   armPID;
+  boolean       usingLimelight;
   public armSubsystem(int motorID, int lowerLimitPort, int encoderPort1, int encoderPort2) {
 
     this.motorID = motorID;
@@ -50,7 +51,9 @@ public class armSubsystem extends SubsystemBase {
     
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
     kP = 0.03;//TODO: TUNE PID HERE
-    kI = 0;
+    kPUP = 0.015;//used for when its going up to prevent unspooling
+    kDUP = .0005;
+    kI = 0.002;
     kD = 0;
     kIz = 0;
     kFF = 0.00017; // .000015
@@ -69,7 +72,14 @@ public class armSubsystem extends SubsystemBase {
   public void periodic() {
     //just polls the encoder angle maybe for command stuff idk yet!
     currentPose = angEncoder.getDistance();
-    armMotor.set(-armPID.calculate(-getAngle(),setpoint));
+    
+    if (!usingLimelight) {
+      armMotor.set(armPID.calculate(-getAngle(),setpoint));
+    }
+    if (usingLimelight) {
+      System.out.println("now Using Limelight Current offset: "+armLimelight.getLimelightTX());
+      armMotor.set(armPID.calculate(-getAngle(),setpoint+(.95*armLimelight.getLimelightTX())));
+    }
     SmartDashboard.putNumber("Desired Pose",setpoint);
 
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
@@ -82,9 +92,19 @@ public class armSubsystem extends SubsystemBase {
   //sets the arm to a certain pose
   double position;
   public void setPose(double desiredPosition, boolean useLimelight){
- 
+
     //with the encoder reading 2048 ticks per full rotation, it is 5.68... encoder ticks per degree
+      usingLimelight = useLimelight;
+      if(setpoint<desiredPosition){
+        armPID.setP(kP);
+        armPID.setD(kD);
+      }
+      if(setpoint>desiredPosition){
+        armPID.setP(kPUP);
+        armPID.setD(kDUP);
+      }
       setpoint = desiredPosition;
+
     SmartDashboard.putNumber("CURRENT ARM SETPOINT",position);
 
   }

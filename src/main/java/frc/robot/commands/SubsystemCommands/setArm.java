@@ -11,12 +11,13 @@ public class setArm extends Command {
   /** Creates a new setArm. */
   armSubsystem sArm;
   double setpoint,currentPose;
-  boolean useLimitSwitch,blimitSwitch;
+  boolean useLimitSwitch,blimitSwitch,useLimelight;
 
   public setArm(armSubsystem sArm, double setpoint, boolean useLimitSwitch, boolean useLimelight) {
     this.sArm = sArm;
     this.setpoint = setpoint;
     this.useLimitSwitch = useLimitSwitch;
+    this.useLimelight = useLimelight;
 
 
     addRequirements(sArm);
@@ -26,7 +27,7 @@ public class setArm extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    sArm.setPose(setpoint,false);
+    sArm.setPose(setpoint,useLimelight);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

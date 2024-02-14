@@ -198,7 +198,7 @@ public class RobotContainer {
     );
     m_OpController.povLeft().onTrue(new setShooter(sShooter, 0, false, false));
     m_OpController.b().onTrue(new ParallelCommandGroup(
-      new setArm(sArm,Constants.subsystemConstants.kArmShootingPos,false,false),
+      new setArm(sArm,Constants.subsystemConstants.kArmShootingPos,false,true),
       new setShooter(sShooter, Constants.subsystemConstants.kSpoolSpeed, false, false)
       ));
 
@@ -215,13 +215,13 @@ public class RobotContainer {
     //SWERVE BINDINGS
 
     m_driverController.leftBumper().whileTrue(new aprilTagSwerve(drivebase, 
-                                  () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
+                                  () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
                                    OperatorConstants.LEFT_Y_DEADBAND),
-                                  () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
+                                  () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
                                    OperatorConstants.LEFT_X_DEADBAND),
                                   () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
                                    OperatorConstants.RIGHT_X_DEADBAND),
-                                  () -> driverXbox.getRightBumper(),driverXbox,opXbox));
+                                  () -> !driverXbox.getRightBumper(),driverXbox,opXbox));
 
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));

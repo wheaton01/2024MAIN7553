@@ -48,7 +48,8 @@ public class setShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (setpoint-subsystemConstants.kShooterPIDTolerance<sShooter.getTopVelocity()){
+    if (setpoint-subsystemConstants.kShooterPIDTolerance<sShooter.getTopVelocity() &&
+    setpoint-subsystemConstants.kShooterPIDTolerance<sShooter.getBotVelocity()){
       System.out.println("Shooter At Speed");
       return true;
     }else return false;
