@@ -90,10 +90,10 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     public static final int kOperatorPort = 1;
     public static final int kDriverPort = 0;
     // Joystick Deadband
-    public static final double LEFT_X_DEADBAND = 0.01;
-    public static final double LEFT_Y_DEADBAND = 0.01;
-    public static final double RIGHT_X_DEADBAND = 0.01;
-    public static final double RIGHT_Y_DEADBAND = 0.01;
+    public static final double LEFT_X_DEADBAND = 0.05;
+    public static final double LEFT_Y_DEADBAND = 0.05;
+    public static final double RIGHT_X_DEADBAND = 0.05;
+    public static final double RIGHT_Y_DEADBAND = 0.05;
     public static final double TURN_CONSTANT = .750;
   }
   public static class driveterainConstants{
@@ -107,13 +107,13 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
 
     //ARM CONSTANTS
     public static final double kArmShootingPos           = 70;
-    public static final double kArmGroundFeedPos         = 92.2;
+    public static final double kArmGroundFeedPos         = 92.8;
     public static final double kArmAmpPos                = 0;
-    public static final double kArmStowPos               = 20;
+    public static final double kArmStowPos               = 60;
     //SHOOTING CONSTANTS
-    public static final double kShootingSpeed            = .8;
+    public static final double kShootingSpeed            = .9;
     public static final double kShooterPIDTolerance      = 300;
-    public static final double kSpoolSpeed               = .5;
+    public static final double kSpoolSpeed               = .9;
     public static final double kIdleSpeed                = .2;    
     // public static final double kShooterPIDTolerance      = 300;
     // public static final double kSpoolSpeed               = 2500;
@@ -123,7 +123,7 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     public static final double kWaitForShoot             = 2;
     //INTAKE CONSTANTS
     public static final double kIntakeSpeed              = 1.;
-    public static final double kIntakeFeedSpeed          = .5;
+    public static final double kIntakeFeedSpeed          = .8;
 
     public static final double kIntakeZero               = 0;
     public static final int kNoteDetectedValueUL           = 2200;

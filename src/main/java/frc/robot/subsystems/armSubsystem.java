@@ -50,9 +50,9 @@ public class armSubsystem extends SubsystemBase {
     resetEncoder();
     
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
-    kP = 0.03;//TODO: TUNE PID HERE
-    kPUP = 0.015;//used for when its going up to prevent unspooling
-    kDUP = .0005;
+    kP = 0.032;//TODO: TUNE PID HERE
+    kPUP = 0.011;//used for when its going up to prevent unspooling
+    kDUP = .0008;
     kI = 0.002;
     kD = 0;
     kIz = 0;
@@ -78,7 +78,7 @@ public class armSubsystem extends SubsystemBase {
     }
     if (usingLimelight) {
       System.out.println("now Using Limelight Current offset: "+armLimelight.getLimelightTX());
-      armMotor.set(armPID.calculate(-getAngle(),setpoint+(.95*armLimelight.getLimelightTX())));
+      armMotor.set(armPID.calculate(-getAngle(),setpoint+(.875*armLimelight.getLimelightTX())));
     }
     SmartDashboard.putNumber("Desired Pose",setpoint);
 
@@ -102,6 +102,7 @@ public class armSubsystem extends SubsystemBase {
       if(setpoint>desiredPosition){
         armPID.setP(kPUP);
         armPID.setD(kDUP);
+  
       }
       setpoint = desiredPosition;
 
