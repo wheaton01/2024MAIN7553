@@ -23,8 +23,9 @@ import frc.robot.limelight;
 
 public class armSubsystem extends SubsystemBase {
   /** Creates a new armSubsystem. */
-  public double kP, kI, kD, kIz, kFF,kPUP,kDUP, kMaxOutput, kMinOutput, maxRPM;
+  public double kP, kI, kD, kIz, kFF,kPUP,kDUP,kFFUP,kIUP, kMaxOutput, kMinOutput, maxRPM;
   public double setpoint,currentPose, limelightTa,limelightTx,limelightTy;
+  public double kPToHome,kIToHome,kDToHome;
   int motorID,encoderPort1,encoderPort2,winchMotorID,lowerLimitPort;
   
   //Object Creation
@@ -50,15 +51,20 @@ public class armSubsystem extends SubsystemBase {
     resetEncoder();
     
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
-    kP = 0.028832;//TODO: TUNE PID HERE
-    kPUP = 0.003832;//used for when its going up to prevent unspooling
-    kDUP = .0;
-    kI = 0.0000002;
-    kD = 0;
+    kP = 0.00258832;//TODO: TUNE PID HERE
+    kI = 0.000000004;
+    kD = 0.000000015;
+
+    kPUP = 0.00290832;//used for when its going up to prevent unspooling
+    kIUP = .00000005;    
+    kDUP = .000000001;
+
+    kPToHome = 0.008832;//used for when its going up to prevent unspooling
+    kIToHome = .000001;    
+    kDToHome = .0;    
     kIz = 0;
-    kFF = 0.013; // .000015
     kMaxOutput = 1;
-    kMinOutput = -.05;
+    kMinOutput = -1;
     armPID = new PIDController(kP, kI,kD);
     
     angEncoder.setDistancePerPulse(360.0/2048.0);
@@ -97,12 +103,20 @@ public class armSubsystem extends SubsystemBase {
       usingLimelight = useLimelight;
       if(setpoint<desiredPosition){
         armPID.setP(kP);
+        armPID.setI(kI);
         armPID.setD(kD);
+        
       }
       if(setpoint>desiredPosition){
         armPID.setP(kPUP);
+        armPID.setI(kIUP);
         armPID.setD(kDUP);
   
+      }
+      if(desiredPosition ==0){
+        armPID.setP(kPToHome);
+        armPID.setI(kIToHome);
+        armPID.setD(kDToHome);
       }
       setpoint = desiredPosition;
 
