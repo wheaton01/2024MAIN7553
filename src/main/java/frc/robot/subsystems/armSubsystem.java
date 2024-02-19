@@ -15,6 +15,8 @@ import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +36,7 @@ public class armSubsystem extends SubsystemBase {
   DigitalInput dLowerLimit;
   limelight       armLimelight;
   PIDController   armPID;
+  ProfiledPIDController armPrPID;
   boolean       usingLimelight;
   public armSubsystem(int motorID, int lowerLimitPort, int encoderPort1, int encoderPort2) {
 
@@ -51,24 +54,27 @@ public class armSubsystem extends SubsystemBase {
     resetEncoder();
     
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
-    kP = 0.00258832;//TODO: TUNE PID HERE
-    kI = 0.000000004;
-    kD = 0.000000015;
+    kP = 0.012588;//TODO: TUNE PID HERE
+    kI = 0.000185;
+    kD = 0.001200;
+    armPrPID = new ProfiledPIDController(kP,kI,kD, new TrapezoidProfile.Constraints(350,600)) ;
 
-    kPUP = 0.00290832;//used for when its going up to prevent unspooling
-    kIUP = .00000005;    
-    kDUP = .000000001;
+    // kPUP = 0.00290832;//used for when its going up to prevent unspooling
+    // kIUP = .00000005;    
+    // kDUP = .000000001;
 
-    kPToHome = 0.008832;//used for when its going up to prevent unspooling
-    kIToHome = .000001;    
-    kDToHome = .0;    
+    // kPToHome = 0.008832;//used for when its going up to prevent unspooling
+    // kIToHome = .000001;    
+    // kDToHome = .0;    
     kIz = 0;
     kMaxOutput = 1;
     kMinOutput = -1;
     armPID = new PIDController(kP, kI,kD);
     
     angEncoder.setDistancePerPulse(360.0/2048.0);
-
+    SmartDashboard.putNumber("ArmKP", kP);
+    SmartDashboard.putNumber("ArmKI", kI);
+    SmartDashboard.putNumber("ArmKD", kD);
 
     armPID.setIZone(kIz);
     armPID.setTolerance(.5);
@@ -78,17 +84,25 @@ public class armSubsystem extends SubsystemBase {
   public void periodic() {
     //just polls the encoder angle maybe for command stuff idk yet!
     currentPose = angEncoder.getDistance();
-    
+    armPrPID.setGoal(setpoint);
     if (!usingLimelight) {
-      armMotor.set(-armPID.calculate(-getAngle(),setpoint));
+      armMotor.set(-armPrPID.calculate(-getAngle(),setpoint));
     }
     if (usingLimelight) {
       System.out.println("now Using Limelight Current offset: "+armLimelight.getLimelightTX());
-      armMotor.set(-armPID.calculate(-getAngle(),setpoint+(.895*armLimelight.getLimelightTX())));
+      armMotor.set(-armPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
     }
+    SmartDashboard.putNumber("armMotor Current SPeed", armMotor.get());
     SmartDashboard.putNumber("Desired Pose",setpoint);
 
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
+
+       armPrPID.setP(SmartDashboard.getNumber("ArmKP", kP));
+       armPrPID.setI(SmartDashboard.getNumber("ArmKI", kI));
+       armPrPID.setD(SmartDashboard.getNumber("ArmKD", kD));
+       kP = SmartDashboard.getNumber("ArmKP", kP);
+       kI = SmartDashboard.getNumber("ArmKI", kI);
+       kD = SmartDashboard.getNumber("ArmKD", kD);
 
     // This method will be called once per scheduler run
   }
@@ -101,24 +115,26 @@ public class armSubsystem extends SubsystemBase {
 
     //with the encoder reading 2048 ticks per full rotation, it is 5.68... encoder ticks per degree
       usingLimelight = useLimelight;
-      if(setpoint<desiredPosition){
-        armPID.setP(kP);
-        armPID.setI(kI);
-        armPID.setD(kD);
+      // if(setpoint<desiredPosition){
+      //   armPID.setP(kP);
+      //   armPID.setI(kI);
+      //   armPID.setD(kD);
         
-      }
-      if(setpoint>desiredPosition){
-        armPID.setP(kPUP);
-        armPID.setI(kIUP);
-        armPID.setD(kDUP);
+      // }
+      // if(setpoint>desiredPosition){
+      //   armPID.setP(kPUP);
+      //   armPID.setI(kIUP);
+      //   armPID.setD(kDUP);
   
-      }
-      if(desiredPosition ==0){
-        armPID.setP(kPToHome);
-        armPID.setI(kIToHome);
-        armPID.setD(kDToHome);
-      }
+      // }
+      // if(desiredPosition ==0){
+      //   armPID.setP(kPToHome);
+      //   armPID.setI(kIToHome);
+      //   armPID.setD(kDToHome);
+      // }
+      
       setpoint = desiredPosition;
+
 
     SmartDashboard.putNumber("CURRENT ARM SETPOINT",position);
 
