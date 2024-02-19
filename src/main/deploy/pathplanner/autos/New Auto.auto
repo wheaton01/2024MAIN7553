@@ -14,13 +14,76 @@
         {
           "type": "path",
           "data": {
-            "pathName": "toFirstNote"
+            "pathName": "AngleToShot"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PrepToShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignAndShoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundFeed"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "toSecondNote"
+            "pathName": "toFirstNote"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "PrepToShoot"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "toSecondShot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3NoteP2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "GroundFeed"
+                }
+              }
+            ]
           }
         }
       ]

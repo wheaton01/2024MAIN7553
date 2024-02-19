@@ -54,11 +54,11 @@ public class armSubsystem extends SubsystemBase {
     resetEncoder();
     
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
-    kP = 0.012588;//TODO: TUNE PID HERE
-    kI = 0.000185;
-    kD = 0.001200;
+    kP = 0.015588;//TODO: TUNE PID HERE
+    kI = 0.000385;
+    kD = 0.001300;
     armPrPID = new ProfiledPIDController(kP,kI,kD, new TrapezoidProfile.Constraints(350,600)) ;
-
+    armPrPID.setTolerance(1.5);
     // kPUP = 0.00290832;//used for when its going up to prevent unspooling
     // kIUP = .00000005;    
     // kDUP = .000000001;
