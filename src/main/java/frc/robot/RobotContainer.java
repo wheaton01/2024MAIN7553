@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Drivebase;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.subsystemConstants;
@@ -33,10 +34,6 @@ import frc.robot.commands.SubsystemCommands.setArm;
 import frc.robot.commands.SubsystemCommands.setIntake;
 import frc.robot.commands.SubsystemCommands.setShooter;
 import frc.robot.commands.SubsystemCommands.setWinch;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
-import frc.robot.commands.swervedrive.drivebase.TeleopDrive;
-import frc.robot.commands.swervedrive.drivebase.zeroGyroCommand;
 import frc.robot.commands.swervedrive.drivebase.*;
 import frc.robot.commands.testCommands.setServo;
 import frc.robot.subsystems.armSubsystem;
@@ -92,10 +89,10 @@ public class RobotContainer {
                                 () -> driverXbox.getRightBumper());
 
   AbsoluteDrive absDrive = new AbsoluteDrive(drivebase,  
-                                () -> -MathUtil.applyDeadband(driverXbox.getRawAxis(1), 0.02),
-                                () -> -MathUtil.applyDeadband(driverXbox.getRawAxis(0),0.02),
-                                () -> -MathUtil.applyDeadband(driverXbox.getRawAxis(4), 0.02),  
-                                () -> -MathUtil.applyDeadband(driverXbox.getRawAxis(5), 0.02));
+                                () -> MathUtil.applyDeadband(driverXbox.getRawAxis(1), 0.02),
+                                () -> MathUtil.applyDeadband(driverXbox.getRawAxis(0),0.02),
+                                () -> MathUtil.applyDeadband(driverXbox.getRawAxis(4), 0.02),  
+                                () -> MathUtil.applyDeadband(driverXbox.getRawAxis(5), 0.02));
                             
                             
   AbsoluteFieldDrive teleopField = new AbsoluteFieldDrive(drivebase,   
@@ -118,12 +115,9 @@ public class RobotContainer {
 
   //this will be the default command for the intake so we can have manual controll of it                             
   setAnalogIntake analogIntake = new setAnalogIntake(sIntake,
-  ()-> MathUtil.applyDeadband(0.1, m_OpController.getLeftTriggerAxis()),
-  ()-> MathUtil.applyDeadband(0.1, m_OpController.getRightTriggerAxis()), 
+  ()-> MathUtil.applyDeadband(0.25, m_OpController.getLeftTriggerAxis()),
+  ()-> MathUtil.applyDeadband(0.25, m_OpController.getRightTriggerAxis()), 
   false);
-
-
-
 
 
   private final SendableChooser<Command> autoChooser;
@@ -135,7 +129,7 @@ public class RobotContainer {
       new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(.5),
       new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true),
       new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
-      ).withTimeout(0));//Timeout is temp to test auto
+      ).withTimeout(2.0));//Timeout is temp to test auto
 
     NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
       new setArm(sArm,subsystemConstants.kArmShootingPos, false, false).withTimeout(.5),
@@ -214,9 +208,9 @@ public class RobotContainer {
     //SWERVE BINDINGS
 
     m_driverController.leftBumper().whileTrue(new aprilTagSwerve(drivebase, 
-                                  () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
+                                  () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
                                    OperatorConstants.LEFT_Y_DEADBAND),
-                                  () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
+                                  () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
                                    OperatorConstants.LEFT_X_DEADBAND),
                                   () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
                                    OperatorConstants.RIGHT_X_DEADBAND),
@@ -224,9 +218,6 @@ public class RobotContainer {
 
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));
-
-
-    
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 

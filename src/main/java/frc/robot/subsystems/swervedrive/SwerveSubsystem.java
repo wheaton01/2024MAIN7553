@@ -5,6 +5,7 @@
 package frc.robot.subsystems.swervedrive;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -38,6 +39,7 @@ public class SwerveSubsystem extends SubsystemBase
   //LIMELIGHT INFO!
   double tx,ty,ta;
   limelight swervLimelight = new limelight();
+  PathConstraints constraints;
   /**
    * Swerve drive object.
    */
@@ -82,7 +84,9 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
 
     setupPathPlanner();
+
   }
+
 
   /**
    * Construct the swerve drive.
@@ -472,5 +476,6 @@ public class SwerveSubsystem extends SubsystemBase
     public void limelightOn(){
   swervLimelight.lightsOn();
   }
+
     
 }

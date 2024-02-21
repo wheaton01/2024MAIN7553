@@ -25,7 +25,7 @@ import frc.robot.limelight;
 
 public class armSubsystem extends SubsystemBase {
   /** Creates a new armSubsystem. */
-  public double kP, kI, kD, kIz, kFF,kPUP,kDUP,kFFUP,kIUP, kMaxOutput, kMinOutput, maxRPM;
+  public double kP, kI, kD, kIz, kFF,kPUP,kDUP,kFFUP,kIUP, kMaxOutput, kMinOutput, maxRPM, oldPose,newPose;
   public double setpoint,currentPose, limelightTa,limelightTx,limelightTy;
   public double kPToHome,kIToHome,kDToHome;
   int motorID,encoderPort1,encoderPort2,winchMotorID,lowerLimitPort;
@@ -37,7 +37,7 @@ public class armSubsystem extends SubsystemBase {
   limelight       armLimelight;
   PIDController   armPID;
   ProfiledPIDController armPrPID;
-  boolean       usingLimelight;
+  boolean       usingLimelight,bErrorFlag;
   public armSubsystem(int motorID, int lowerLimitPort, int encoderPort1, int encoderPort2) {
 
     this.motorID = motorID;
@@ -78,13 +78,25 @@ public class armSubsystem extends SubsystemBase {
 
     armPID.setIZone(kIz);
     armPID.setTolerance(.5);
+    bErrorFlag = false;
+    oldPose= 0;
+    newPose= 0;
   }
 
   @Override
   public void periodic() {
     //just polls the encoder angle maybe for command stuff idk yet!
     currentPose = angEncoder.getDistance();
+    newPose = getAngle();
+    if(Math.abs(oldPose)-Math.abs(newPose)>10){
+      bErrorFlag = true;
+    }
     armPrPID.setGoal(setpoint);
+    if (bErrorFlag) {
+      armMotor.set(0);
+      System.out.println("ARM IS IN ERROR STATE");
+    }
+    if(!bErrorFlag){
     if (!usingLimelight) {
       armMotor.set(-armPrPID.calculate(-getAngle(),setpoint));
     }
@@ -92,6 +104,9 @@ public class armSubsystem extends SubsystemBase {
       System.out.println("now Using Limelight Current offset: "+armLimelight.getLimelightTX());
       armMotor.set(-armPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
     }
+  }
+ 
+    oldPose = newPose;
     SmartDashboard.putNumber("armMotor Current SPeed", armMotor.get());
     SmartDashboard.putNumber("Desired Pose",setpoint);
 
@@ -150,4 +165,5 @@ public class armSubsystem extends SubsystemBase {
     angEncoder.reset();
 
   }
+  
 }
