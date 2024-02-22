@@ -29,22 +29,20 @@ public class armSubsystem extends SubsystemBase {
   public double setpoint,currentPose, limelightTa,limelightTx,limelightTy;
   public double kPToHome,kIToHome,kDToHome;
   int motorID,encoderPort1,encoderPort2,winchMotorID,lowerLimitPort;
-  
+  public boolean bGoingUp;
   //Object Creation
   Encoder angEncoder;
   CANSparkMax armMotor;
   DigitalInput dLowerLimit;
   limelight       armLimelight;
   PIDController   armPID;
-  ProfiledPIDController armPrPID,armUpPrPID;
+  PIDController armPrPID,armUpPrPID;
   boolean       usingLimelight,bErrorFlag;
   public armSubsystem(int motorID, int lowerLimitPort, int encoderPort1, int encoderPort2) {
-
     this.motorID = motorID;
     this.encoderPort1 = encoderPort1;
     this.encoderPort2 = encoderPort2;
     this.lowerLimitPort = lowerLimitPort;
-    
     armLimelight = new limelight();
     dLowerLimit = new DigitalInput(lowerLimitPort);
     angEncoder = new Encoder(encoderPort1,encoderPort2);
@@ -52,21 +50,22 @@ public class armSubsystem extends SubsystemBase {
     //armMotor.getAlternateEncoder(2048);//should be okay
     //TODO: ZERO ENCODER
     resetEncoder();
-    
     // angEncoder.setDistancePerPulse(360.0/2048.0);//will return 360 units for every 2048 pulses which should be the hex shaft encoders value
-    kP = 0.015588;//TODO: TUNE PID HERE
-    kI = 0.000385;
-    kD = 0.001300;
-    armPrPID = new ProfiledPIDController(kP,kI,kD, new TrapezoidProfile.Constraints(50,50)) ;
-    armPrPID.setTolerance(1.5);
-    kPUP = 0.015588;//TODO: TUNE PID HERE
-    kIUP = 0.000385;
-    kDUP = 0.001300;
-    armUpPrPID = new ProfiledPIDController(kPUP,kIUP,kDUP, new TrapezoidProfile.Constraints(50,50)) ;
-    armUpPrPID.setTolerance(1.5);
-
+    kP = 0.038600;//TODO: TUNE PID HERE
+    kI = 0.0;
+    kD = 0.0;
+    armPrPID = new PIDController(kP,kI, kD);
+    // armPrPID = new ProfiledPIDController(kP,kI,kD, 
+    // new TrapezoidProfile.Constraints(20,40)) ;
+    armPrPID.setTolerance(.25);
+    kPUP = 0.009000;//TODO: TUNE PID HERE
+    kIUP = 0.0;
+    kDUP = 0.0002;
+    armUpPrPID = new PIDController(kPUP,kIUP, kDUP);
+    // armUpPrPID = new ProfiledPIDController(kPUP,kIUP,kDUP, 
+    // new TrapezoidProfile.Constraints(8,15)) ;
+    armUpPrPID.setTolerance(.25);
     armPID = new PIDController(kP, kI,kD);
-    
     angEncoder.setDistancePerPulse(360.0/2048.0);
     SmartDashboard.putNumber("ArmKP", kP);
     SmartDashboard.putNumber("ArmKI", kI);
@@ -75,10 +74,11 @@ public class armSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ArmKIUP", kIUP);
     SmartDashboard.putNumber("ArmKDUP", kDUP);
     armPID.setIZone(kIz);
-    armPID.setTolerance(.5);
+    armPID.setTolerance(.25);
     bErrorFlag = false;
     oldPose= 0;
     newPose= 0;
+    bGoingUp=false;
   }
 
   @Override
@@ -86,81 +86,54 @@ public class armSubsystem extends SubsystemBase {
     //just polls the encoder angle maybe for command stuff idk yet!
     currentPose = angEncoder.getDistance();
     newPose = getAngle();
+    
     if(Math.abs(oldPose)-Math.abs(newPose)>10){
       bErrorFlag = true;
     }
-    armPrPID.setGoal(setpoint);
-    armUpPrPID.setGoal(setpoint);
     if (bErrorFlag) {
       armMotor.set(0);
       System.out.println("ARM IS IN ERROR STATE");
     }
-    if(!bErrorFlag){
-      if(Math.abs(currentPose)>=Math.abs(setpoint)){
-      SmartDashboard.putString("ARM PID","DOWN PID IN USE");
+ 
 
-     if (!usingLimelight) {
-       armMotor.set(armPrPID.calculate(-getAngle(),setpoint));
-     }
-     if (usingLimelight) {
-       System.out.println("now Using Limelight| Current offset: "+armLimelight.getLimelightTX());
-       armMotor.set(armPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
-     }
-  }
-    if(Math.abs(currentPose)<Math.abs(setpoint)){
-     SmartDashboard.putString("ARM PID","UP PID IN USE");
-     if (!usingLimelight) {
-       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint));
-     }
-     if (usingLimelight) {
-       System.out.println("now Using Limelight| Current offset: "+armLimelight.getLimelightTX());
-       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
-     }
-  }
-} 
+    if(!bErrorFlag){
+    if(bGoingUp){
+      upPIDControl();
+      //armPrPID.setGoal(setpoint);
+    }if(!bGoingUp){
+      downPIDControl();
+      //armUpPrPID.setGoal(setpoint);
+    }
     oldPose = newPose;
     SmartDashboard.putNumber("armMotor Current SPeed", armMotor.get());
     SmartDashboard.putNumber("Desired Pose",setpoint);
+    SmartDashboard.putNumber("Current Velocity", armMotor.getEncoder().getVelocity());
 
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
     pidSetter();
     // This method will be called once per scheduler run
-  }
+}
+}
   public boolean checkLowerLimit(){
     return dLowerLimit.get();
   }
   //sets the arm to a certain pose
   double position;
   public void setPose(double desiredPosition, boolean useLimelight){
-
     //with the encoder reading 2048 ticks per full rotation, it is 5.68... encoder ticks per degree
       usingLimelight = useLimelight;
-      // if(setpoint<desiredPosition){
-      //   armPID.setP(kP);
-      //   armPID.setI(kI);
-      //   armPID.setD(kD);
-        
-      // }
-      // if(setpoint>desiredPosition){
-      //   armPID.setP(kPUP);
-      //   armPID.setI(kIUP);
-      //   armPID.setD(kDUP);
-  
-      // }
-      // if(desiredPosition ==0){
-      //   armPID.setP(kPToHome);
-      //   armPID.setI(kIToHome);
-      //   armPID.setD(kDToHome);
-      // }
-      
+      // if(setpoint<desiredPosition){    
+        if(Math.abs(setpoint)>Math.abs(desiredPosition)){
+          bGoingUp=true;
+        }else{
+          bGoingUp=false;
+        } 
+
       setpoint = desiredPosition;
-
-
     SmartDashboard.putNumber("CURRENT ARM SETPOINT",position);
 
   }
   //sets winch speed, plan on using operator stick values for this
-
   //gets current angle 
   public double getAngle(){
     return angEncoder.getDistance();
@@ -168,7 +141,6 @@ public class armSubsystem extends SubsystemBase {
   //resets encoder
   public void resetEncoder(){
     angEncoder.reset();
-
   }
   public void pidSetter(){
        armPrPID.setP(SmartDashboard.getNumber("ArmKP", kP));
@@ -185,6 +157,28 @@ public class armSubsystem extends SubsystemBase {
        kIUP = SmartDashboard.getNumber("ArmKIUP", kI);
        kDUP = SmartDashboard.getNumber("ArmKDUP", kD);
 
+  }
+
+  public void downPIDControl(){
+      SmartDashboard.putString("ARM PID","DOWN PID IN USE");
+
+     if (!usingLimelight) {
+       armMotor.set(armPrPID.calculate(-getAngle(),setpoint));
+     }
+     if (usingLimelight) {
+       System.out.println("now Using Limelight| Current offset: "+armLimelight.getLimelightTX());
+       armMotor.set(armPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
+     }
+  }
+  public void upPIDControl() {
+     SmartDashboard.putString("ARM PID","UP PID IN USE");
+     if (!usingLimelight) {
+       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint));
+     }
+     if (usingLimelight) {
+       System.out.println("now Using Limelight| Current offset: "+armLimelight.getLimelightTX());
+       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
+     }
   }
   
 }

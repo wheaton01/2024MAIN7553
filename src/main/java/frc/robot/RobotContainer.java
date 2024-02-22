@@ -126,10 +126,10 @@ public class RobotContainer {
   
     //Some named commands to be used for auton
     NamedCommands.registerCommand("GroundFeed", new ParallelCommandGroup(
-      new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(.5),
+      new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(1.0),
       new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true),
       new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
-      ).withTimeout(2.0));//Timeout is temp to test auto
+      ).withTimeout(4.0));//Timeout is temp to test auto
 
     NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
       new setArm(sArm,subsystemConstants.kArmShootingPos, false, false).withTimeout(.5),
@@ -138,7 +138,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( 
       new ParallelCommandGroup(
     new alignToAprilTag(drivebase,1,false), 
-    new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false).withTimeout(.5)), 
+    new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false).withTimeout(2)), 
     new fireAndFeed(sIntake, sShooter).withTimeout(3)));
 
     configureBindings();

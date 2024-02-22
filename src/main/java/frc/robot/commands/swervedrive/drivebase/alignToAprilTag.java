@@ -75,7 +75,7 @@ addRequirements(swerve);
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(tx>1.){
+    if(ty>1.){
       return false;
     }else return true;
   }
