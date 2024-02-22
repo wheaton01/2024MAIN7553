@@ -36,7 +36,7 @@ public class armSubsystem extends SubsystemBase {
   DigitalInput dLowerLimit;
   limelight       armLimelight;
   PIDController   armPID;
-  ProfiledPIDController armPrPID;
+  ProfiledPIDController armPrPID,armUpPrPID;
   boolean       usingLimelight,bErrorFlag;
   public armSubsystem(int motorID, int lowerLimitPort, int encoderPort1, int encoderPort2) {
 
@@ -57,25 +57,23 @@ public class armSubsystem extends SubsystemBase {
     kP = 0.015588;//TODO: TUNE PID HERE
     kI = 0.000385;
     kD = 0.001300;
-    armPrPID = new ProfiledPIDController(kP,kI,kD, new TrapezoidProfile.Constraints(350,600)) ;
+    armPrPID = new ProfiledPIDController(kP,kI,kD, new TrapezoidProfile.Constraints(50,50)) ;
     armPrPID.setTolerance(1.5);
-    // kPUP = 0.00290832;//used for when its going up to prevent unspooling
-    // kIUP = .00000005;    
-    // kDUP = .000000001;
+    kPUP = 0.015588;//TODO: TUNE PID HERE
+    kIUP = 0.000385;
+    kDUP = 0.001300;
+    armUpPrPID = new ProfiledPIDController(kPUP,kIUP,kDUP, new TrapezoidProfile.Constraints(50,50)) ;
+    armUpPrPID.setTolerance(1.5);
 
-    // kPToHome = 0.008832;//used for when its going up to prevent unspooling
-    // kIToHome = .000001;    
-    // kDToHome = .0;    
-    kIz = 0;
-    kMaxOutput = 1;
-    kMinOutput = -1;
     armPID = new PIDController(kP, kI,kD);
     
     angEncoder.setDistancePerPulse(360.0/2048.0);
     SmartDashboard.putNumber("ArmKP", kP);
     SmartDashboard.putNumber("ArmKI", kI);
     SmartDashboard.putNumber("ArmKD", kD);
-
+    SmartDashboard.putNumber("ArmKPUP", kPUP);
+    SmartDashboard.putNumber("ArmKIUP", kIUP);
+    SmartDashboard.putNumber("ArmKDUP", kDUP);
     armPID.setIZone(kIz);
     armPID.setTolerance(.5);
     bErrorFlag = false;
@@ -92,33 +90,40 @@ public class armSubsystem extends SubsystemBase {
       bErrorFlag = true;
     }
     armPrPID.setGoal(setpoint);
+    armUpPrPID.setGoal(setpoint);
     if (bErrorFlag) {
       armMotor.set(0);
       System.out.println("ARM IS IN ERROR STATE");
     }
     if(!bErrorFlag){
-    if (!usingLimelight) {
-      armMotor.set(-armPrPID.calculate(-getAngle(),setpoint));
-    }
-    if (usingLimelight) {
-      System.out.println("now Using Limelight Current offset: "+armLimelight.getLimelightTX());
-      armMotor.set(-armPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
-    }
+      if(Math.abs(currentPose)>=Math.abs(setpoint)){
+      SmartDashboard.putString("ARM PID","DOWN PID IN USE");
+
+     if (!usingLimelight) {
+       armMotor.set(armPrPID.calculate(-getAngle(),setpoint));
+     }
+     if (usingLimelight) {
+       System.out.println("now Using Limelight| Current offset: "+armLimelight.getLimelightTX());
+       armMotor.set(armPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
+     }
   }
- 
+    if(Math.abs(currentPose)<Math.abs(setpoint)){
+     SmartDashboard.putString("ARM PID","UP PID IN USE");
+     if (!usingLimelight) {
+       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint));
+     }
+     if (usingLimelight) {
+       System.out.println("now Using Limelight| Current offset: "+armLimelight.getLimelightTX());
+       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
+     }
+  }
+} 
     oldPose = newPose;
     SmartDashboard.putNumber("armMotor Current SPeed", armMotor.get());
     SmartDashboard.putNumber("Desired Pose",setpoint);
 
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
-
-       armPrPID.setP(SmartDashboard.getNumber("ArmKP", kP));
-       armPrPID.setI(SmartDashboard.getNumber("ArmKI", kI));
-       armPrPID.setD(SmartDashboard.getNumber("ArmKD", kD));
-       kP = SmartDashboard.getNumber("ArmKP", kP);
-       kI = SmartDashboard.getNumber("ArmKI", kI);
-       kD = SmartDashboard.getNumber("ArmKD", kD);
-
+    pidSetter();
     // This method will be called once per scheduler run
   }
   public boolean checkLowerLimit(){
@@ -163,6 +168,22 @@ public class armSubsystem extends SubsystemBase {
   //resets encoder
   public void resetEncoder(){
     angEncoder.reset();
+
+  }
+  public void pidSetter(){
+       armPrPID.setP(SmartDashboard.getNumber("ArmKP", kP));
+       armPrPID.setI(SmartDashboard.getNumber("ArmKI", kI));
+       armPrPID.setD(SmartDashboard.getNumber("ArmKD", kD));
+       armUpPrPID.setP(SmartDashboard.getNumber("ArmKPUP", kPUP));
+       armUpPrPID.setI(SmartDashboard.getNumber("ArmKIUP", kIUP));
+       armUpPrPID.setD(SmartDashboard.getNumber("ArmKDUP", kDUP));
+       kP = SmartDashboard.getNumber("ArmKP", kP);
+       kI = SmartDashboard.getNumber("ArmKI", kI);
+       kD = SmartDashboard.getNumber("ArmKD", kD);
+       
+       kPUP = SmartDashboard.getNumber("ArmKPUP", kPUP);
+       kIUP = SmartDashboard.getNumber("ArmKIUP", kI);
+       kDUP = SmartDashboard.getNumber("ArmKDUP", kD);
 
   }
   

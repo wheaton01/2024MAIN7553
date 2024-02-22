@@ -107,7 +107,7 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
 
     //ARM CONSTANTS
     public static final double kArmShootingPos           = 70;
-    public static final double kArmGroundFeedPos         = 92.8;
+    public static final double kArmGroundFeedPos         = 90.0;
     public static final double kArmAmpPos                = 0;
     public static final double kArmStowPos               = 60;
     //SHOOTING CONSTANTS
@@ -133,11 +133,11 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
   }
   public static final class Ports{
     //TODO: GET CORRECT MOTOR IDS
-    public static final int kArmMotorID            = 12;
+    public static final int kArmMotorID            = 11;
     public static final int kIntakeMotorID         = 13;
     public static final int kTopShooterMotorID     = 9;
     public static final int kBotShooterMotorID     = 10;
-    public static final int kWinchMotorID          = 11;
+    public static final int kWinchMotorID          = 12;
     public static final int kArmEncoderID1         = 1;
     public static final int kArmEncoderID2         = 2;
     //likely using attached motor controller encoder port

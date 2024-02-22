@@ -462,6 +462,9 @@ public class SwerveSubsystem extends SubsystemBase
     public double getLimelightA(){
       return swervLimelight.getLimelightTA();
     }
+    public boolean hasTarget(){
+      return swervLimelight.hasTarget();
+    }
 
   /**
    * Add a fake vision reading for testing purposes.

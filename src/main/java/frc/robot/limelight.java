@@ -14,7 +14,7 @@ NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 NetworkTableEntry tx = table.getEntry("tx");
 NetworkTableEntry ty = table.getEntry("ty");
 NetworkTableEntry ta = table.getEntry("ta");
-
+double targetAmount;
     public double getLimelightTX(){
         return table.getEntry("tx").getDouble(0);
     }
@@ -32,5 +32,11 @@ NetworkTableEntry ta = table.getEntry("ta");
     }
     public void lightsForceOn(){
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(3);
+    }
+    public boolean hasTarget(){
+        targetAmount=table.getEntry("tv").getDouble(0);
+        if (targetAmount>0){
+            return true;
+        }else return false;
     }
 }

@@ -72,7 +72,7 @@ addRequirements(swerve);
     SmartDashboard.putNumber("omega", angVelocity);
     printLimelightVal();
     // Drive using raw values.
-    
+    if (hasTarget()){
     if (Math.abs(ty)<1.5){
     swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
                  angVelocity * controller.config.maxAngularVelocity,
@@ -91,9 +91,14 @@ addRequirements(swerve);
     opXbox.setRumble(RumbleType.kBothRumble,1.0);
     driverXbox.setRumble(RumbleType.kBothRumble,1.0);
   }
+ }
+ if(!hasTarget()){
+      swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
+                 angVelocity * controller.config.maxAngularVelocity,
+                 driveMode.getAsBoolean());
+ }
 
-
-  }
+}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -119,6 +124,9 @@ addRequirements(swerve);
   }
   public double getTy(){
     return swerve.getLimelightY();
+  }
+  public boolean hasTarget(){
+    return swerve.hasTarget();
   }
 
   public void printLimelightVal()
