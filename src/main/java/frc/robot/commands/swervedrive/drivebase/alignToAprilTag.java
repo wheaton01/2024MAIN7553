@@ -47,14 +47,14 @@ addRequirements(swerve);
 
     printLimelightVal();
     // Drive using raw values.
-    if (Math.abs(tx)<1.5){
+    if (Math.abs(ty)<1.5){
     swerve.drive(new Translation2d(0, 0),
                  0,
                  !driveMode);
   }
-  if (Math.abs(tx)>1.5){
+  if (Math.abs(ty)>1.5){
     swerve.drive(new Translation2d((0) * swerve.maximumSpeed, (0)* swerve.maximumSpeed),
-    (Constants.Auton.swerveTurnRate*tx) * controller.config.maxAngularVelocity,
+    (Constants.Auton.swerveTurnRate*swerve.getLimelightY()*.5) * controller.config.maxAngularVelocity,
     driveMode);
   }
 

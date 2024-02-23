@@ -58,7 +58,7 @@ public class armSubsystem extends SubsystemBase {
     // armPrPID = new ProfiledPIDController(kP,kI,kD, 
     // new TrapezoidProfile.Constraints(20,40)) ;
     armPrPID.setTolerance(.25);
-    kPUP = 0.009000;//TODO: TUNE PID HERE
+    kPUP = 0.022000;//TODO: TUNE PID HERE
     kIUP = 0.0;
     kDUP = 0.0002;
     armUpPrPID = new PIDController(kPUP,kIUP, kDUP);

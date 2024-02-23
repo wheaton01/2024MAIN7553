@@ -129,15 +129,18 @@ public class RobotContainer {
       new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(1.0),
       new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true),
       new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
-      ).withTimeout(4.0));//Timeout is temp to test auto
-
+    ));//Timeout is temp to test auto
+    
+    NamedCommands.registerCommand("AlignToTarget",
+    new alignToAprilTag(drivebase,1,false).withTimeout(2.0));
     NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
-      new setArm(sArm,subsystemConstants.kArmShootingPos, false, false).withTimeout(.5),
+      new setArm(sArm,subsystemConstants.kArmShootingPos, false, true).withTimeout(.5),
       new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false)
     ));
     NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( 
       new ParallelCommandGroup(
     new alignToAprilTag(drivebase,1,false), 
+      new setArm(sArm,subsystemConstants.kArmShootingPos, false, true).withTimeout(.5),
     new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false).withTimeout(2)), 
     new fireAndFeed(sIntake, sShooter).withTimeout(3)));
 
