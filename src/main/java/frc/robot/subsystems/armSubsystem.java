@@ -26,7 +26,7 @@ import frc.robot.limelight;
 public class armSubsystem extends SubsystemBase {
   /** Creates a new armSubsystem. */
   public double kP, kI, kD, kIz, kFF,kPUP,kDUP,kFFUP,kIUP, kMaxOutput, kMinOutput, maxRPM, oldPose,newPose;
-  public double setpoint,currentPose, limelightTa,limelightTx,limelightTy;
+  public double setpoint,currentPose, limelightTa,limelightTx,limelightTy,armScaling;
   public double kPToHome,kIToHome,kDToHome;
   int motorID,encoderPort1,encoderPort2,winchMotorID,lowerLimitPort;
   public boolean bGoingUp;
@@ -64,6 +64,7 @@ public class armSubsystem extends SubsystemBase {
     armUpPrPID = new PIDController(kPUP,kIUP, kDUP);
     // armUpPrPID = new ProfiledPIDController(kPUP,kIUP,kDUP, 
     // new TrapezoidProfile.Constraints(8,15)) ;
+    armScaling = .85;
     armUpPrPID.setTolerance(.25);
     armPID = new PIDController(kP, kI,kD);
     angEncoder.setDistancePerPulse(360.0/2048.0);
@@ -73,6 +74,7 @@ public class armSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ArmKPUP", kPUP);
     SmartDashboard.putNumber("ArmKIUP", kIUP);
     SmartDashboard.putNumber("ArmKDUP", kDUP);
+    SmartDashboard.putNumber("armScaling", armScaling);
     armPID.setIZone(kIz);
     armPID.setTolerance(.25);
     bErrorFlag = false;
@@ -156,6 +158,7 @@ public class armSubsystem extends SubsystemBase {
        kPUP = SmartDashboard.getNumber("ArmKPUP", kPUP);
        kIUP = SmartDashboard.getNumber("ArmKIUP", kI);
        kDUP = SmartDashboard.getNumber("ArmKDUP", kD);
+       armScaling = SmartDashboard.getNumber("armScaling", armScaling);
 
   }
 
@@ -166,8 +169,8 @@ public class armSubsystem extends SubsystemBase {
        armMotor.set(armPrPID.calculate(-getAngle(),setpoint));
      }
      if (usingLimelight) {
-       System.out.println("now Using Limelight| Current offset: "+armLimelight.getLimelightTX());
-       armMotor.set(armPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
+       System.out.println("now Using Limelight| Current offset: "+armStableLimelight());
+       armMotor.set(armPrPID.calculate(-getAngle(),setpoint+(armScaling*armStableLimelight())));
      }
   }
   public void upPIDControl() {
@@ -176,9 +179,20 @@ public class armSubsystem extends SubsystemBase {
        armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint));
      }
      if (usingLimelight) {
-       System.out.println("now Using Limelight| Current offset: "+armLimelight.getLimelightTX());
-       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint+(.865*armLimelight.getLimelightTX())));
+       System.out.println("now Using Limelight| Current offset: "+armStableLimelight());
+       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint+(armScaling*armStableLimelight())));
      }
+  }
+  //this is used to stablise the arm at distance to prevent bouncy travel
+  double oldLimelight = 0;
+  public double armStableLimelight(){
+    if(armLimelight.hasTarget()){
+      oldLimelight = armLimelight.getLimelightTX();
+      return armLimelight.getLimelightTX();
+    }else if(!armLimelight.hasTarget()){
+      return oldLimelight;
+    }
+    return 0;
   }
   
 }
