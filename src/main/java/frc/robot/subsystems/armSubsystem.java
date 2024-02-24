@@ -65,7 +65,7 @@ public class armSubsystem extends SubsystemBase {
     // armUpPrPID = new ProfiledPIDController(kPUP,kIUP,kDUP, 
     // new TrapezoidProfile.Constraints(8,15)) ;
     armScaling = .85;
-    armUpPrPID.setTolerance(.25);
+    armUpPrPID.setTolerance(.15);
     armPID = new PIDController(kP, kI,kD);
     angEncoder.setDistancePerPulse(360.0/2048.0);
     SmartDashboard.putNumber("ArmKP", kP);
@@ -76,7 +76,7 @@ public class armSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ArmKDUP", kDUP);
     SmartDashboard.putNumber("armScaling", armScaling);
     armPID.setIZone(kIz);
-    armPID.setTolerance(.25);
+    armPID.setTolerance(.15);
     bErrorFlag = false;
     oldPose= 0;
     newPose= 0;

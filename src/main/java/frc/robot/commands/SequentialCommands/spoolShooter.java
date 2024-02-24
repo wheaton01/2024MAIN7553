@@ -28,7 +28,7 @@ public class spoolShooter extends ParallelCommandGroup {
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new setIntake(sIntake, Constants.subsystemConstants.kIntakeZero, false), 
+    addCommands(new setIntake(sIntake, Constants.subsystemConstants.kIntakeZero, false,false), 
                 new setShooter(sShooter, Constants.subsystemConstants.kShootingSpeed, true,false)
                 
                 );

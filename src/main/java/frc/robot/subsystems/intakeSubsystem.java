@@ -31,16 +31,20 @@ public class intakeSubsystem extends SubsystemBase {
     intakeM = new CANSparkMax(motorID, CANSparkLowLevel.MotorType.kBrushed);
     //intakeMC = new CANSparkMax(motorID, MotorType.kBrushed);//TODO: NOT SURE IF WE ARE USING SPARKMAX OR TALON
   }
-
+boolean hasNote;
   @Override
   public void periodic() {
     if(autonMode){
-      if (getNoteSensorVal()>subsystemConstants.kNoteDetectedValueUL) {
+      if (getNoteSensorVal()>subsystemConstants.kNoteDetectedValueUL&&!hasNote) {
         intakeM.set(subsystemConstants.kIntakeSpeed);
       }
-      if(getNoteSensorVal()<subsystemConstants.kNoteDetectedValueUL){
+      if(getNoteSensorVal()<subsystemConstants.kNoteDetectedValueUL||hasNote){
         intakeM.set(0);
+        hasNote=true;
       }
+    }
+    if(!autonMode){
+      hasNote=false;
     }
     SmartDashboard.putNumber("note sensor",noteSensor.getValue());
 
@@ -58,5 +62,8 @@ public class intakeSubsystem extends SubsystemBase {
   public boolean autonMode;
   public void setAutonMode(boolean bAutonMode){
     autonMode = bAutonMode;
+  }
+  public void resetNote(){
+    hasNote=false;
   }
 }

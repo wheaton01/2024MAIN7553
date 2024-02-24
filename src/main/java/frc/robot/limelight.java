@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -38,5 +39,8 @@ double targetAmount;
         if (targetAmount>0){
             return true;
         }else return false;
+    }
+    public Pose2d getPose(){
+        return null;
     }
 }
