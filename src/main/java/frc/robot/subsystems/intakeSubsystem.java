@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.subsystemConstants;
 
 public class intakeSubsystem extends SubsystemBase {
   /** Creates a new intakeSubsystem. */
@@ -33,8 +34,15 @@ public class intakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if(autonMode){
+      if (getNoteSensorVal()>subsystemConstants.kNoteDetectedValueUL) {
+        intakeM.set(subsystemConstants.kIntakeSpeed);
+      }
+      if(getNoteSensorVal()<subsystemConstants.kNoteDetectedValueUL){
+        intakeM.set(0);
+      }
+    }
     SmartDashboard.putNumber("note sensor",noteSensor.getValue());
-
 
     // This method will be called once per scheduler run
 
@@ -46,5 +54,9 @@ public class intakeSubsystem extends SubsystemBase {
   }
   public int getNoteSensorVal(){
     return noteSensor.getValue();
+  }
+  public boolean autonMode;
+  public void setAutonMode(boolean bAutonMode){
+    autonMode = bAutonMode;
   }
 }

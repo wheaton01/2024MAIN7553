@@ -14,15 +14,13 @@ public class setIntake extends Command {
   /** Creates a new setIntake. */
   intakeSubsystem sIntake;
   double setpoint;
-  boolean useNoteSensor;
+  boolean useNoteSensor,autonMode;
   int     noteSensorVal;
-  public setIntake(intakeSubsystem sIntake, double setpoint,boolean useNoteSensor) {
+  public setIntake(intakeSubsystem sIntake, double setpoint,boolean useNoteSensor,boolean autonMode) {
     this.sIntake = sIntake;
     this.setpoint = setpoint;
     this.useNoteSensor = useNoteSensor;
-
-
-
+    this.autonMode = autonMode;
     addRequirements(sIntake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -30,6 +28,7 @@ public class setIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    sIntake.setAutonMode(autonMode);
        if (noteSensorVal<Constants.subsystemConstants.kNoteDetectedValueUL && noteSensorVal>subsystemConstants.kNoteDetectedValueLL && noteSensorVal>subsystemConstants.kNoteDetectedValueLL){
      sIntake.setSpeed(setpoint);
 
@@ -60,6 +59,9 @@ public class setIntake extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(autonMode){
+      return true;
+    }
     if (useNoteSensor){
        if (sIntake.getNoteSensorVal()<Constants.subsystemConstants.kNoteDetectedValueUL){
         System.out.println("Stopped Due to Note Sensor");

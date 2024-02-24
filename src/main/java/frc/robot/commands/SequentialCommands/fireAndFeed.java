@@ -26,7 +26,7 @@ public class fireAndFeed extends ParallelCommandGroup {
     this.sIntake  = sIntake;
     this.sShooter = sShooter;
 
-    addCommands(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed, false), 
+    addCommands(new setIntake(sIntake, Constants.subsystemConstants.kIntakeFeedSpeed, false,false), 
     new setShooter(sShooter, Constants.subsystemConstants.kShootingSpeed, false,false));
   }
 }

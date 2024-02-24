@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 4.083749250119582,
+        "y": 7.133434209888363
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3413202381960323,
-        "y": 6.958021893251764
+        "x": 5.206388076593817,
+        "y": 7.145128364330803
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.855863033663389,
-        "y": 7.0
+        "x": 6.130226277546571,
+        "y": 6.969716047694203
       },
       "prevControl": {
-        "x": 2.5518150181599513,
-        "y": 6.700750495518085
+        "x": 4.735608478992736,
+        "y": 7.20432464932008
+      },
+      "nextControl": {
+        "x": 7.381500802887644,
+        "y": 6.759221267730286
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.001290988336962,
+        "y": 6.034183692299009
+      },
+      "prevControl": {
+        "x": 7.100841096269086,
+        "y": 6.969716047694203
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,11 +55,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
-    "rotateFast": false
+    "rotation": -39.80557109226509,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": null,
+  "folder": "VGoodAuto",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

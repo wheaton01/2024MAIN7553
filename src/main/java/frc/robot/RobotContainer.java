@@ -127,9 +127,10 @@ public class RobotContainer {
     //Some named commands to be used for auton
     NamedCommands.registerCommand("GroundFeed", new ParallelCommandGroup(
       new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(1.0),
-      new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true),
+      new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true,true),
       new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
     ));//Timeout is temp to test auto
+    NamedCommands.registerCommand("ArmPoseDown", absDrive);
     
     NamedCommands.registerCommand("AlignToTarget",
     new alignToAprilTag(drivebase,1,false).withTimeout(2.0));
@@ -177,14 +178,14 @@ public class RobotContainer {
 
     
     //Operator Bindings
-    m_driverController.rightBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true ),
+    m_driverController.rightBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false ),
     new setHaptics(cHaptics, 60).withTimeout(.2)));
-    m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true ),
+    m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false),
     new setHaptics(cHaptics, 60).withTimeout(.2)));
     m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
     new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false),   
-    new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false).withTimeout(1.0),
-    new setIntake(sIntake, 0, false).withTimeout(.01),
+    new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.0),
+    new setIntake(sIntake, 0, false,false).withTimeout(.01),
     new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
       ));
     //Turn On intake at kIntakeFeedSpeed until the note sensor reads true

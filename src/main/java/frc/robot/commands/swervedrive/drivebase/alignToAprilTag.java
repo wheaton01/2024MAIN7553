@@ -4,11 +4,13 @@
 
 package frc.robot.commands.swervedrive.drivebase;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.commands.SequentialCommands.poseAndShootNote;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveController;
 
@@ -19,9 +21,12 @@ public class alignToAprilTag extends Command {
   Boolean driveMode;
   SwerveSubsystem swerve;
   SwerveController controller;
+  double kP,kI,kD;
+  PIDController thetaController;
 
 public alignToAprilTag(SwerveSubsystem swerve,int targetTag, Boolean driveMode)
 {
+  
 this.swerve = swerve;
 this.targetTag=targetTag;
 this.driveMode = driveMode;
@@ -34,6 +39,10 @@ addRequirements(swerve);
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    kP = .0125;
+    kI= 0.00001;
+    kD = 0.000001;
+    thetaController = new PIDController(kP, kI, kD);
     swerve.limelightOn();
     getLimelightValues();
     System.out.println("LIMELIGHT TRACKING HAS BEGUN!");
@@ -43,21 +52,10 @@ addRequirements(swerve);
   @Override
   public void execute() {
     getLimelightValues();
-
-
     printLimelightVal();
-    // Drive using raw values.
-    if (Math.abs(ty)<1.5){
     swerve.drive(new Translation2d(0, 0),
-                 0,
-                 !driveMode);
-  }
-  if (Math.abs(ty)>1.5){
-    swerve.drive(new Translation2d((0) * swerve.maximumSpeed, (0)* swerve.maximumSpeed),
-    (Constants.Auton.swerveTurnRate*swerve.getLimelightY()*.5) * controller.config.maxAngularVelocity,
+    (thetaController.calculate(swerve.getLimelightY(),0) * controller.config.maxAngularVelocity),
     driveMode);
-  }
-
   }
 
   // Called once the command ends or is interrupted.

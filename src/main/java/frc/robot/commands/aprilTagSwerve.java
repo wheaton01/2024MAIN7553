@@ -42,7 +42,6 @@ this.vY = vY;
 this.omega = omega;
 this.driveMode = driveMode;
 this.controller = swerve.getSwerveController();
-
 // Use addRequirements() here to declare subsystem dependencies.
 addRequirements(swerve);
 }
