@@ -4,19 +4,9 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxRelativeEncoder;
-import com.revrobotics.SparkPIDController;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +18,7 @@ public class armSubsystem extends SubsystemBase {
   public double kP, kI, kD, kIz, kFF,kPUP,kDUP,kFFUP,kIUP, kMaxOutput, kMinOutput, maxRPM, oldPose,newPose;
   public double setpoint,currentPose, limelightTa,limelightTx,limelightTy,armScaling;
   public double kPToHome,kIToHome,kDToHome;
+  double armOffset;
   int motorID,encoderPort1,encoderPort2,winchMotorID,lowerLimitPort;
   public boolean bGoingUp;
   //Object Creation
@@ -37,7 +28,7 @@ public class armSubsystem extends SubsystemBase {
   limelight       armLimelight;
   PIDController   armPID;
   PIDController armPrPID,armUpPrPID;
-  boolean       usingLimelight,bErrorFlag;
+  boolean       usingLimelight,bErrorFlag,bRecoveryMode;
   public armSubsystem(int motorID, int lowerLimitPort, int encoderPort1, int encoderPort2) {
     this.motorID = motorID;
     this.encoderPort1 = encoderPort1;
@@ -58,13 +49,13 @@ public class armSubsystem extends SubsystemBase {
     // armPrPID = new ProfiledPIDController(kP,kI,kD, 
     // new TrapezoidProfile.Constraints(20,40)) ;
     armPrPID.setTolerance(.25);
-    kPUP = 0.022000;//TODO: TUNE PID HERE
+    kPUP = 0.024000;//TODO: TUNE PID HERE
     kIUP = 0.0;
     kDUP = 0.0002;
     armUpPrPID = new PIDController(kPUP,kIUP, kDUP);
     // armUpPrPID = new ProfiledPIDController(kPUP,kIUP,kDUP, 
     // new TrapezoidProfile.Constraints(8,15)) ;
-    armScaling = .85;
+    armScaling = .932;
     armUpPrPID.setTolerance(.15);
     armPID = new PIDController(kP, kI,kD);
     angEncoder.setDistancePerPulse(360.0/2048.0);
@@ -81,6 +72,8 @@ public class armSubsystem extends SubsystemBase {
     oldPose= 0;
     newPose= 0;
     bGoingUp=false;
+    armOffset = 0;
+    bRecoveryMode = false;
   }
 
   @Override
@@ -96,8 +89,8 @@ public class armSubsystem extends SubsystemBase {
       armMotor.set(0);
       System.out.println("ARM IS IN ERROR STATE");
     }
- 
 
+if(!bRecoveryMode){
     if(!bErrorFlag){
     if(bGoingUp){
       upPIDControl();
@@ -106,6 +99,7 @@ public class armSubsystem extends SubsystemBase {
       downPIDControl();
       //armUpPrPID.setGoal(setpoint);
     }
+  }
     oldPose = newPose;
     SmartDashboard.putNumber("armMotor Current SPeed", armMotor.get());
     SmartDashboard.putNumber("Desired Pose",setpoint);
@@ -114,7 +108,8 @@ public class armSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
     pidSetter();
     // This method will be called once per scheduler run
-}
+  }
+
 }
   public boolean checkLowerLimit(){
     return dLowerLimit.get();
@@ -132,6 +127,7 @@ public class armSubsystem extends SubsystemBase {
         } 
 
       setpoint = desiredPosition;
+    SmartDashboard.putNumber("CURRENT ARM OFFSET", armOffset);
     SmartDashboard.putNumber("CURRENT ARM SETPOINT",position);
 
   }
@@ -170,7 +166,7 @@ public class armSubsystem extends SubsystemBase {
      }
      if (usingLimelight) {
        System.out.println("now Using Limelight| Current offset: "+armStableLimelight());
-       armMotor.set(armPrPID.calculate(-getAngle(),setpoint+(armScaling*armStableLimelight())));
+       armMotor.set(armPrPID.calculate(-getAngle(),setpoint+armOffset+(armScaling*armStableLimelight())));
      }
   }
   public void upPIDControl() {
@@ -180,7 +176,7 @@ public class armSubsystem extends SubsystemBase {
      }
      if (usingLimelight) {
        System.out.println("now Using Limelight| Current offset: "+armStableLimelight());
-       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint+(armScaling*armStableLimelight())));
+       armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint+armOffset+(armScaling*armStableLimelight())));
      }
   }
   //this is used to stablise the arm at distance to prevent bouncy travel
@@ -194,5 +190,17 @@ public class armSubsystem extends SubsystemBase {
     }
     return 0;
   }
-  
+  public void armoffsetUP(){
+      armOffset = armOffset+1;
+  }
+    public void armoffsetDown(){
+      armOffset = armOffset-1;
+  }
+  public void recoveryMode(double setpoint){
+    bRecoveryMode = true;
+    armMotor.set(setpoint/2);
+  }
+  public void resetRecoveryMode(){
+    bRecoveryMode = false;
+  }
 }

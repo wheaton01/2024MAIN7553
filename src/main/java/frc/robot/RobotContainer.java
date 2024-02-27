@@ -30,6 +30,7 @@ import frc.robot.commands.aprilTagSwerve;
 import frc.robot.commands.setHaptics;
 import frc.robot.commands.SequentialCommands.fireAndFeed;
 import frc.robot.commands.SequentialCommands.spoolShooter;
+import frc.robot.commands.SubsystemCommands.armRecovery;
 import frc.robot.commands.SubsystemCommands.setAnalogIntake;
 import frc.robot.commands.SubsystemCommands.setArm;
 import frc.robot.commands.SubsystemCommands.setIntake;
@@ -120,6 +121,7 @@ public class RobotContainer {
   ()-> MathUtil.applyDeadband(0.25, m_OpController.getRightTriggerAxis()), 
   false);
 
+  setWinch      analogSetWinch = new setWinch(sWinch,()-> m_OpController.getRawAxis(5));
 
   private final SendableChooser<Command> autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -141,10 +143,10 @@ public class RobotContainer {
     ));
     NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( 
       new ParallelCommandGroup(
-    new alignToAprilTag(drivebase,1,false), 
+      new alignToAprilTag(drivebase,1,false), 
       new setArm(sArm,subsystemConstants.kArmShootingPos, false, true).withTimeout(.5),
-    new setShooter(sShooter, subsystemConstants.kSpoolSpeed, false,false).withTimeout(2)), 
-    new fireAndFeed(sIntake, sShooter).withTimeout(3)));
+      new setShooter(sShooter, subsystemConstants.kShootingSpeed, false,false).withTimeout(2)), 
+      new fireAndFeed(sIntake, sShooter).withTimeout(.5)));
 
     configureBindings();
 
@@ -167,20 +169,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem)); might be good to use for sequential command control
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    
-    //Driver Bindings
-
-    
     //Operator Bindings
-    m_driverController.rightBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false ),
-    new setHaptics(cHaptics, 60).withTimeout(.2)));
+    // m_driverController.rightBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false ),
+    // new setHaptics(cHaptics, 60).withTimeout(.2)));
     m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false),
     new setHaptics(cHaptics, 60).withTimeout(.2)));
     m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
@@ -204,12 +195,15 @@ public class RobotContainer {
       new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
       new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
       ));
-    m_OpController.povUp().onTrue(new setWinch(sWinch,1.0));
-    m_OpController.povDown().onTrue(new setWinch(sWinch,-1.0));
-    m_OpController.povCenter().onTrue(new setWinch(sWinch, 0));
 
-    m_OpController.x().onTrue(new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false));
 
+    m_OpController.x().onTrue(new ParallelCommandGroup(
+      new setArm(sArm,subsystemConstants.kArmStowPos,false,false),
+      new setShooter(sShooter,subsystemConstants.kShootingSpeed, false, false)));
+
+    m_OpController.povDown().onTrue(new InstantCommand(sArm::armoffsetUP));
+    m_OpController.povUp().onTrue(new InstantCommand(sArm::armoffsetDown));
+    m_OpController.button(9).onTrue(new armRecovery(sArm,()-> m_OpController.getRawAxis(1)));
     //SWERVE BINDINGS
 
     m_driverController.leftBumper().whileTrue(new aprilTagSwerve(drivebase, 
@@ -245,9 +239,16 @@ public class RobotContainer {
   public void setIntakeMode()
   {
     sIntake.setDefaultCommand(analogIntake);
+    sWinch.setDefaultCommand(analogSetWinch);
   }
   public void updatePose(){
     //new InstantCommand(drivebase::addFakeVisionReading);
+  }
+  public void startCameraServer(){
+    
+  }
+  public void resetAutonMode(){
+    new InstantCommand(sIntake::resetAutonMode);
   }
 
 

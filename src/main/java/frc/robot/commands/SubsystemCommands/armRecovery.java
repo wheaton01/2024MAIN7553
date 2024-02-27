@@ -4,41 +4,38 @@
 
 package frc.robot.commands.SubsystemCommands;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.armSubsystem;
-import frc.robot.subsystems.winchSubsystem;
 
-public class setWinch extends Command {
-  /** Creates a new setWinch. */
+public class armRecovery extends Command {
+  /** Creates a new armRecovery. */
+  armSubsystem sArm;
   DoubleSupplier setpoint;
-  winchSubsystem sWinch;
-  public setWinch(winchSubsystem sWinch, DoubleSupplier setpoint) {
-
-    this.sWinch= sWinch;
+  public armRecovery(armSubsystem sArm, DoubleSupplier setpoint) {
+    this.sArm= sArm;
     this.setpoint=setpoint;
-    
+    addRequirements(sArm);
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(sWinch);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    sWinch.setWinch(setpoint.getAsDouble());
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    sArm.recoveryMode(setpoint.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    sArm.resetRecoveryMode();
   }
 
   // Returns true when the command should end.

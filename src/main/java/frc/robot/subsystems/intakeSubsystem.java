@@ -63,6 +63,10 @@ boolean hasNote;
   public void setAutonMode(boolean bAutonMode){
     autonMode = bAutonMode;
   }
+  public void resetAutonMode(){
+    autonMode = false;
+    hasNote   = false;
+  }
   public void resetNote(){
     hasNote=false;
   }

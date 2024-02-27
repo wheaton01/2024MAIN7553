@@ -162,8 +162,51 @@
                       "data": {
                         "name": "AlignToTarget"
                       }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PrepToShoot"
+                      }
                     }
                   ]
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.15
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignAndShoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GroundFeed"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CSS P3"
                 }
               }
             ]

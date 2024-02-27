@@ -107,9 +107,9 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
 
     //ARM CONSTANTS
     public static final double kArmShootingPos           = 75;
-    public static final double kArmGroundFeedPos         = 92.5;
+    public static final double kArmGroundFeedPos         = 89.96;
     public static final double kArmAmpPos                = 0;
-    public static final double kArmStowPos               = 60;
+    public static final double kArmStowPos               = 75;
     //SHOOTING CONSTANTS
     public static final double kShootingSpeed            = 1.0;
     public static final double kShooterPIDTolerance      = 300;
