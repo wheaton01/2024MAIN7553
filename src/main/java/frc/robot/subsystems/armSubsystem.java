@@ -55,7 +55,7 @@ public class armSubsystem extends SubsystemBase {
     armUpPrPID = new PIDController(kPUP,kIUP, kDUP);
     // armUpPrPID = new ProfiledPIDController(kPUP,kIUP,kDUP, 
     // new TrapezoidProfile.Constraints(8,15)) ;
-    armScaling = .932;
+    armScaling = .925;
     armUpPrPID.setTolerance(.15);
     armPID = new PIDController(kP, kI,kD);
     angEncoder.setDistancePerPulse(360.0/2048.0);
@@ -82,7 +82,7 @@ public class armSubsystem extends SubsystemBase {
     currentPose = angEncoder.getDistance();
     newPose = getAngle();
     
-    if(Math.abs(oldPose)-Math.abs(newPose)>10){
+    if(Math.abs(oldPose)-Math.abs(newPose)>20){
       bErrorFlag = true;
     }
     if (bErrorFlag) {
@@ -100,15 +100,16 @@ if(!bRecoveryMode){
       //armUpPrPID.setGoal(setpoint);
     }
   }
-    oldPose = newPose;
+    pidSetter();
+  }
     SmartDashboard.putNumber("armMotor Current SPeed", armMotor.get());
     SmartDashboard.putNumber("Desired Pose",setpoint);
     SmartDashboard.putNumber("Current Velocity", armMotor.getEncoder().getVelocity());
-
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
-    pidSetter();
     // This method will be called once per scheduler run
-  }
+  
+      oldPose = newPose;
+
 
 }
   public boolean checkLowerLimit(){
@@ -155,6 +156,8 @@ if(!bRecoveryMode){
        kIUP = SmartDashboard.getNumber("ArmKIUP", kI);
        kDUP = SmartDashboard.getNumber("ArmKDUP", kD);
        armScaling = SmartDashboard.getNumber("armScaling", armScaling);
+      SmartDashboard.putNumber("armOffset", armOffset);
+
 
   }
 
@@ -165,7 +168,7 @@ if(!bRecoveryMode){
        armMotor.set(armPrPID.calculate(-getAngle(),setpoint));
      }
      if (usingLimelight) {
-       System.out.println("now Using Limelight| Current offset: "+armStableLimelight());
+       SmartDashboard.putNumber("now Using Limelight| Current offset: ",armStableLimelight());
        armMotor.set(armPrPID.calculate(-getAngle(),setpoint+armOffset+(armScaling*armStableLimelight())));
      }
   }

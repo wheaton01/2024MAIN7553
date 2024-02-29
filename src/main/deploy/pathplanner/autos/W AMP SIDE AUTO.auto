@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3940937283583965,
-      "y": 5.55472336015897
+      "x": 0.7392210795817603,
+      "y": 6.700750495518085
     },
-    "rotation": 0
+    "rotation": 59.32271997820354
   },
   "command": {
     "type": "sequential",
@@ -16,19 +16,82 @@
           "data": {
             "commands": [
               {
-                "type": "parallel",
+                "type": "named",
+                "data": {
+                  "name": "PrepToShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignAndShoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GroundFeed"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ASA P1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "parallel",
                       "data": {
-                        "name": "AlignToTarget"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "AlignToTarget"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PrepToShoot"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.4
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "PrepToShoot"
+                        "name": "AlignAndShoot"
                       }
                     }
                   ]
@@ -39,18 +102,6 @@
                 "data": {
                   "waitTime": 0.2
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AlignAndShoot"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.05
-                }
               }
             ]
           }
@@ -66,15 +117,9 @@
                 }
               },
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.1
-                }
-              },
-              {
                 "type": "path",
                 "data": {
-                  "pathName": "CS P1"
+                  "pathName": "ASA P2"
                 }
               }
             ]
@@ -91,13 +136,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "PrepToShoot"
+                        "name": "AlignToTarget"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "AlignToTarget"
+                        "name": "PrepToShoot"
                       }
                     }
                   ]
@@ -106,7 +151,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.15
+                  "waitTime": 0.5
                 }
               },
               {
@@ -135,78 +180,9 @@
                 }
               },
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.15
-                }
-              },
-              {
                 "type": "path",
                 "data": {
-                  "pathName": "CSS P2"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AlignToTarget"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "PrepToShoot"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.15
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AlignAndShoot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "GroundFeed"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.1
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CSS P3"
+                  "pathName": "ASA P3"
                 }
               }
             ]
@@ -215,6 +191,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Mostly There",
   "choreoAuto": false
 }

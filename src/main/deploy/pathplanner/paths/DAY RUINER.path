@@ -3,57 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6570624081419103,
-        "y": 5.496252587946771
+        "x": 1.8384715971711143,
+        "y": 3.0755626183617046
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.639371381306865,
-        "y": 5.461170124619452
+        "x": 2.69214487146923,
+        "y": 2.3037484251606686
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.042669914399658,
-        "y": 4.174813135951059
+        "x": 3.651065535749305,
+        "y": 2.1166419540816297
       },
       "prevControl": {
-        "x": 3.896642779040545,
-        "y": 5.005098101364295
+        "x": 2.301634603961685,
+        "y": 2.539768602184527
       },
       "nextControl": {
-        "x": 6.1879095906300465,
-        "y": 3.345098676641287
+        "x": 5.030975759957218,
+        "y": 1.6839582397113522
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.907737752797442,
-        "y": 2.619490595106547
+        "x": 8.492445474919439,
+        "y": 0.9004498920678762
       },
       "prevControl": {
-        "x": 6.387497675280248,
-        "y": 3.5316346416168622
+        "x": 8.492445474919439,
+        "y": 0.514542795467358
       },
       "nextControl": {
-        "x": 9.427977830314635,
-        "y": 1.7073465485962318
+        "x": 8.492445474919439,
+        "y": 3.1875466851068586
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.4054882924580663,
-        "y": 4.853074093612575
+        "x": 8.492445474919439,
+        "y": 7.425788070949362
       },
       "prevControl": {
-        "x": 5.4051887021152965,
-        "y": 4.630885159206216
+        "x": 8.574304556016518,
+        "y": 4.116342363738859
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,13 +62,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 2.0999999999999996,
-      "rotationDegrees": -38.14638157237148,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 2.9,
-      "rotationDegrees": -33.47411513342466,
+      "waypointRelativePos": 2.05,
+      "rotationDegrees": 38.461697420080874,
       "rotateFast": false
     }
   ],
@@ -82,11 +77,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -5.492324557127449,
+    "rotation": 64.84069808396833,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "CENTER START AUTO",
+  "folder": "DAY RUINER",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

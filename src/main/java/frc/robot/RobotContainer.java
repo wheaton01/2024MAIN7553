@@ -117,11 +117,12 @@ public class RobotContainer {
 
   //this will be the default command for the intake so we can have manual controll of it                             
   setAnalogIntake analogIntake = new setAnalogIntake(sIntake,
-  ()-> MathUtil.applyDeadband(0.25, m_OpController.getLeftTriggerAxis()),
-  ()-> MathUtil.applyDeadband(0.25, m_OpController.getRightTriggerAxis()), 
+  ()-> MathUtil.applyDeadband( m_OpController.getLeftTriggerAxis(), .5),
+  ()-> MathUtil.applyDeadband(m_OpController.getRightTriggerAxis(), .5), 
   false);
 
-  setWinch      analogSetWinch = new setWinch(sWinch,()-> m_OpController.getRawAxis(5));
+  setWinch      analogSetWinch = new setWinch(sWinch,
+  ()-> -MathUtil.applyDeadband(m_OpController.getRawAxis(5),.25));
 
   private final SendableChooser<Command> autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -201,8 +202,8 @@ public class RobotContainer {
       new setArm(sArm,subsystemConstants.kArmStowPos,false,false),
       new setShooter(sShooter,subsystemConstants.kShootingSpeed, false, false)));
 
-    m_OpController.povDown().onTrue(new InstantCommand(sArm::armoffsetUP));
-    m_OpController.povUp().onTrue(new InstantCommand(sArm::armoffsetDown));
+    m_OpController.povDown().onTrue(new InstantCommand(sArm::armoffsetDown));
+    m_OpController.povUp().onTrue(new InstantCommand(sArm::armoffsetUP));
     m_OpController.button(9).onTrue(new armRecovery(sArm,()-> m_OpController.getRawAxis(1)));
     //SWERVE BINDINGS
 
@@ -250,9 +251,5 @@ public class RobotContainer {
   public void resetAutonMode(){
     new InstantCommand(sIntake::resetAutonMode);
   }
-
-
-
-
 
 }

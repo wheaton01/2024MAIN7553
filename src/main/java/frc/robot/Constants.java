@@ -92,8 +92,8 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     // Joystick Deadband
     public static final double LEFT_X_DEADBAND = 0.05;
     public static final double LEFT_Y_DEADBAND = 0.05;
-    public static final double RIGHT_X_DEADBAND = 0.05;
-    public static final double RIGHT_Y_DEADBAND = 0.05;
+    public static final double RIGHT_X_DEADBAND = 0.5;
+    public static final double RIGHT_Y_DEADBAND = 0.5;
     public static final double TURN_CONSTANT = .750;
   }
   public static class driveterainConstants{
@@ -107,9 +107,9 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
 
     //ARM CONSTANTS
     public static final double kArmShootingPos           = 75;
-    public static final double kArmGroundFeedPos         = 89.96;
+    public static final double kArmGroundFeedPos         = 90.26;
     public static final double kArmAmpPos                = 0;
-    public static final double kArmStowPos               = 75;
+    public static final double kArmStowPos               = 76.5;
     //SHOOTING CONSTANTS
     public static final double kShootingSpeed            = 1.0;
     public static final double kShooterPIDTolerance      = 300;

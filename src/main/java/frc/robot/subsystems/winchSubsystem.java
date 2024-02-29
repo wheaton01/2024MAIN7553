@@ -33,7 +33,6 @@ public class winchSubsystem extends SubsystemBase {
 
   public void setWinch(double setpoint){
     if (maxTravel>Math.abs(winchEncoder.getPosition())){
-    System.out.println("new Winch Setpoint"+setpoint);
     winchMotor.set(setpoint);
     }else if(maxTravel<Math.abs(winchEncoder.getPosition())){
       System.out.println("MAX TRAVEL WINCH");

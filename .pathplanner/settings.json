@@ -3,8 +3,11 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Longshot",
+    "AMP SIDE AUTO",
     "CENTER START AUTO",
+    "Longshot",
+    "DAY RUINER",
+    "SOURCE START",
     "Simple Auto",
     "UTIL",
     "VGoodAuto"
