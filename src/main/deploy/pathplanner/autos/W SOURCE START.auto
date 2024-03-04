@@ -12,7 +12,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -22,9 +22,15 @@
                 }
               },
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "SOURCE START"
+                  "waitTime": 0.2
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignAndShoot"
                 }
               }
             ]
@@ -179,7 +185,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "PrepToShoot"
+                        "name": "AlignToTarget"
                       }
                     }
                   ]

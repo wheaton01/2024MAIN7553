@@ -60,38 +60,19 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
-                      "type": "parallel",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "AlignToTarget"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PrepToShoot"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.4
+                        "name": "PrepToShoot"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "AlignAndShoot"
+                        "name": "AlignToTarget"
                       }
                     }
                   ]
@@ -101,6 +82,18 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 0.2
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignAndShoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.25
                 }
               }
             ]

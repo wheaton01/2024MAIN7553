@@ -92,8 +92,8 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     // Joystick Deadband
     public static final double LEFT_X_DEADBAND = 0.05;
     public static final double LEFT_Y_DEADBAND = 0.05;
-    public static final double RIGHT_X_DEADBAND = 0.5;
-    public static final double RIGHT_Y_DEADBAND = 0.5;
+    public static final double RIGHT_X_DEADBAND = 0.25;
+    public static final double RIGHT_Y_DEADBAND = 0.25;
     public static final double TURN_CONSTANT = .750;
   }
   public static class driveterainConstants{

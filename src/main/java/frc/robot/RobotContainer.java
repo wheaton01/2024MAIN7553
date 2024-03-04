@@ -130,12 +130,11 @@ public class RobotContainer {
   
     //Some named commands to be used for auton
     NamedCommands.registerCommand("GroundFeed", new ParallelCommandGroup(
-      new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(1.0),
+      new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos, false, false).withTimeout(.250),
       new setIntake(sIntake, subsystemConstants.kIntakeSpeed, true,true),
       new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false)
     ));//Timeout is temp to test auto
-    NamedCommands.registerCommand("ArmPoseDown", absDrive);
-    
+
     NamedCommands.registerCommand("AlignToTarget",
     new alignToAprilTag(drivebase,1,false).withTimeout(2.0));
     NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
@@ -146,7 +145,8 @@ public class RobotContainer {
       new ParallelCommandGroup(
       new alignToAprilTag(drivebase,1,false), 
       new setArm(sArm,subsystemConstants.kArmShootingPos, false, true).withTimeout(.5),
-      new setShooter(sShooter, subsystemConstants.kShootingSpeed, false,false).withTimeout(2)), 
+      new setShooter(sShooter, subsystemConstants.kShootingSpeed, false,false).withTimeout(2)
+      ), 
       new fireAndFeed(sIntake, sShooter).withTimeout(.5)));
 
     configureBindings();
@@ -175,6 +175,7 @@ public class RobotContainer {
     // new setHaptics(cHaptics, 60).withTimeout(.2)));
     m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false),
     new setHaptics(cHaptics, 60).withTimeout(.2)));
+
     m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
     new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false),   
     new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.0),
@@ -186,7 +187,9 @@ public class RobotContainer {
     new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false),
     new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
     );
+
     m_OpController.povLeft().onTrue(new setShooter(sShooter, 0, false, false));
+    
     m_OpController.b().onTrue(new ParallelCommandGroup(
       new setArm(sArm,Constants.subsystemConstants.kArmShootingPos,false,true),
       new setShooter(sShooter, Constants.subsystemConstants.kSpoolSpeed, false, false)
