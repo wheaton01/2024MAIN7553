@@ -106,6 +106,8 @@ if(!bRecoveryMode){
     SmartDashboard.putNumber("Desired Pose",setpoint);
     SmartDashboard.putNumber("Current Velocity", armMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
+    SmartDashboard.putNumber("armOffset", armOffset);
+
     // This method will be called once per scheduler run
   
       oldPose = newPose;
@@ -130,6 +132,7 @@ if(!bRecoveryMode){
       setpoint = desiredPosition;
     SmartDashboard.putNumber("CURRENT ARM OFFSET", armOffset);
     SmartDashboard.putNumber("CURRENT ARM SETPOINT",position);
+    
 
   }
   //sets winch speed, plan on using operator stick values for this
@@ -156,7 +159,6 @@ if(!bRecoveryMode){
        kIUP = SmartDashboard.getNumber("ArmKIUP", kI);
        kDUP = SmartDashboard.getNumber("ArmKDUP", kD);
        armScaling = SmartDashboard.getNumber("armScaling", armScaling);
-      SmartDashboard.putNumber("armOffset", armOffset);
 
 
   }
@@ -195,6 +197,7 @@ if(!bRecoveryMode){
   }
   public void armoffsetUP(){
       armOffset = armOffset+1;
+
   }
     public void armoffsetDown(){
       armOffset = armOffset-1;

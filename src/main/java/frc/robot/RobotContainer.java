@@ -26,6 +26,7 @@ import frc.robot.Constants.Drivebase;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.subsystemConstants;
+import frc.robot.commands.ampTagSwerve;
 import frc.robot.commands.aprilTagSwerve;
 import frc.robot.commands.setHaptics;
 import frc.robot.commands.SequentialCommands.fireAndFeed;
@@ -86,7 +87,7 @@ public class RobotContainer {
                                   OperatorConstants.LEFT_Y_DEADBAND),
                                 () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
                                   OperatorConstants.LEFT_X_DEADBAND),
-                                () -> MathUtil.applyDeadband(driverXbox.getRightX(),
+                                () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
                                   OperatorConstants.RIGHT_X_DEADBAND),
                                 () -> driverXbox.getRightBumper());
 
@@ -219,8 +220,26 @@ public class RobotContainer {
                                    OperatorConstants.RIGHT_X_DEADBAND),
                                   () -> !driverXbox.getRightBumper(),driverXbox,opXbox));
 
+    m_driverController.rightBumper().whileTrue(new ampTagSwerve(drivebase, 
+                                  () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
+                                   OperatorConstants.LEFT_Y_DEADBAND),
+                                  () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
+                                   OperatorConstants.LEFT_X_DEADBAND),
+                                  () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
+                                   OperatorConstants.RIGHT_X_DEADBAND),
+                                  () -> !driverXbox.getRightBumper(),driverXbox,opXbox));
+
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));
+
+    m_driverController.b().onTrue( new ParallelCommandGroup(
+    new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false),
+    new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
+    );
+    m_driverController.y().onTrue(new ParallelCommandGroup(
+      new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
+      new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
+      ));
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
