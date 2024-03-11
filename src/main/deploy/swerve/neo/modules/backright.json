@@ -5,14 +5,14 @@
   },
   "absoluteEncoderOffset": 242.042,
   "drive": {
-    "type": "sparkmax",
+    "type": "falcon",
     "id": 27,
-    "canbus": 27
+    "canbus": null
   },
   "angle": {
     "type": "sparkmax",
     "id": 28,
-    "canbus": 28
+    "canbus": null
   },
 
   "encoder": {

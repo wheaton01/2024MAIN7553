@@ -58,6 +58,7 @@ public class armSubsystem extends SubsystemBase {
     armScaling = .925;
     armUpPrPID.setTolerance(.15);
     armPID = new PIDController(kP, kI,kD);
+    
     angEncoder.setDistancePerPulse(360.0/2048.0);
     SmartDashboard.putNumber("ArmKP", kP);
     SmartDashboard.putNumber("ArmKI", kI);
@@ -68,6 +69,7 @@ public class armSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("armScaling", armScaling);
     armPID.setIZone(kIz);
     armPID.setTolerance(.15);
+    armMotor.setVoltage(12.0);
     bErrorFlag = false;
     oldPose= 0;
     newPose= 0;
@@ -165,6 +167,7 @@ if(!bRecoveryMode){
 
   public void downPIDControl(){
       SmartDashboard.putString("ARM PID","DOWN PID IN USE");
+      armMotor.setSmartCurrentLimit(30);
 
      if (!usingLimelight) {
        armMotor.set(armPrPID.calculate(-getAngle(),setpoint));
@@ -176,6 +179,7 @@ if(!bRecoveryMode){
   }
   public void upPIDControl() {
      SmartDashboard.putString("ARM PID","UP PID IN USE");
+     armMotor.setSmartCurrentLimit(10);
      if (!usingLimelight) {
        armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint));
      }

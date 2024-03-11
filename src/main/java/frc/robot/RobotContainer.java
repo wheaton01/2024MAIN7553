@@ -231,7 +231,7 @@ public class RobotContainer {
 
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));
-
+    //TODO: REMOVE COMMANDS FOR COMP ONLY FOR TESTING WITH ONE CONTROLLER
     m_driverController.b().onTrue( new ParallelCommandGroup(
     new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false),
     new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))

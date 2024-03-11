@@ -86,6 +86,7 @@ public class shooterSubsytem extends SubsystemBase {
     SmartDashboard.putNumber("TOP SPEED", getTopVelocity());
     SmartDashboard.putNumber("BOT SPEED", getBotVelocity());
     SmartDashboard.putNumber("Current Setpoint",currentSetpoint);
+    
     tShooter.set(currentSetpoint);
     bShooter.set(currentSetpoint);
   }
