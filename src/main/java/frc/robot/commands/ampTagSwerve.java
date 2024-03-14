@@ -22,7 +22,7 @@ public class ampTagSwerve extends Command {
   /** Creates a new ampTagSwerve. */
 
 
-  Double tx,ty,ta,kP,kI,kD,kPTheta,kITheta,kDTheta,setpoint,thetaSetpoint;
+  Double tx,ty,ta,kP,kI,kD,kPTheta,kITheta,kDTheta,setpoint,thetaSetpoint,tid;
   DoubleSupplier vX,vY,omega;
   BooleanSupplier driveMode;
 SwerveSubsystem swerve;
@@ -77,24 +77,15 @@ addRequirements(swerve);
     printLimelightVal();
     // Drive using raw values.
     if (hasTarget()){
-    if (Math.abs(tx)<.1){
-    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
-                 angVelocity * controller.config.maxAngularVelocity,
-                 driveMode.getAsBoolean());
-  }
-  if (Math.abs(tx)>.1){
-    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed-(distanceController.calculate(swerve.getLimelightX(), setpoint)), yVelocity* swerve.maximumSpeed),
-    angVelocity * controller.config.maxAngularVelocity-(thetaController.calculate(swerve.getLimelightY(),thetaSetpoint)),
-    driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robzot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
-  }
-  if (Math.abs(tx)>0.1){
-    opXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
-    driverXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
-  }
-  if(Math.abs(tx)<.1){
-    opXbox.setRumble(RumbleType.kBothRumble,1.0);
-    driverXbox.setRumble(RumbleType.kBothRumble,1.0);
-  }
+    tid = swerve.getLimelightTID();
+    SmartDashboard.putNumber("Current Limelight Target", tid);
+
+      if(tid==7||tid == 4||tid ==1){
+      speakerSwerve(xVelocity, yVelocity, angVelocity);
+      }
+      if(tid==6||tid==5){
+      ampSwerve(xVelocity, yVelocity, angVelocity);
+      }
  }
  if(!hasTarget()){
       swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
@@ -117,9 +108,6 @@ addRequirements(swerve);
   public boolean isFinished() {
     return false;
   }
-
-
-
   public void getLimelightValues()
   {
     tx= swerve.getLimelightX();
@@ -139,5 +127,43 @@ addRequirements(swerve);
     SmartDashboard.putNumber("Limelight tx", tx);
     SmartDashboard.putNumber("Limelight ty", ty);
     SmartDashboard.putNumber("Limelight ta", ta);
+  }
+  public void speakerSwerve(double xVelocity,double yVelocity,double angVelocity){
+        if (Math.abs(tx)<.1){
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
+                 angVelocity * controller.config.maxAngularVelocity,
+                 driveMode.getAsBoolean());
+  }
+  if (Math.abs(tx)>.1){
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed-(distanceController.calculate(swerve.getLimelightX(), setpoint)), yVelocity* swerve.maximumSpeed),
+    angVelocity * controller.config.maxAngularVelocity-(thetaController.calculate(swerve.getLimelightY(),thetaSetpoint)),
+    driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robzot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
+  }
+  if (Math.abs(tx)>0.1){
+    opXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
+    driverXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
+  }
+  if(Math.abs(tx)<.1){
+    opXbox.setRumble(RumbleType.kBothRumble,1.0);
+    driverXbox.setRumble(RumbleType.kBothRumble,1.0);
+  }
+  }
+
+    public void ampSwerve(double xVelocity,double yVelocity,double angVelocity){
+
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed-(distanceController.calculate(swerve.getLimelightY(), 0)), yVelocity* swerve.maximumSpeed-.5*(distanceController.calculate(swerve.getLimelightX(), 0))),
+    angVelocity -(distanceController.calculate(swerve.getLimelightY(), setpoint))* controller.config.maxAngularVelocity+.5*(thetaController.calculate(swerve.getLimelightY(),thetaSetpoint)),
+    driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robzot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
+ 
+
+
+  if (Math.abs(tx)>0.1){
+    opXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
+    driverXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
+  }
+  if(Math.abs(tx)<.1){
+    opXbox.setRumble(RumbleType.kBothRumble,1.0);
+    driverXbox.setRumble(RumbleType.kBothRumble,1.0);
+  }
   }
 }

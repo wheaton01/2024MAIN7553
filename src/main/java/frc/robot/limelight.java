@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class limelight {
@@ -39,6 +40,11 @@ double targetAmount;
         if (targetAmount>0){
             return true;
         }else return false;
+    }
+    double tid;
+    public double gettargetID(){
+        tid = table.getEntry("tid").getDouble(0);
+        return tid;
     }
     public Pose2d getPose(){
         return null;

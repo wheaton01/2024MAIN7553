@@ -462,6 +462,9 @@ public class SwerveSubsystem extends SubsystemBase
     public double getLimelightA(){
       return swervLimelight.getLimelightTA();
     }
+    public double getLimelightTID(){
+      return swervLimelight.gettargetID();
+    }
     public boolean hasTarget(){
       return swervLimelight.hasTarget();
     }
