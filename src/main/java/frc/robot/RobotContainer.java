@@ -177,12 +177,12 @@ public class RobotContainer {
     m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false),
     new setHaptics(cHaptics, 60).withTimeout(.2)));
 
-    m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
-    new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false),   
-    new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.0),
-    new setIntake(sIntake, 0, false,false).withTimeout(.01),
-    new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
-      ));
+    // m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
+    // new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false),   
+    // new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.0),
+    // new setIntake(sIntake, 0, false,false).withTimeout(.01),
+    // new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
+    //   ));
     //Turn On intake at kIntakeFeedSpeed until the note sensor reads true
     m_OpController.a().onTrue( new ParallelCommandGroup(
     new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false),
@@ -228,18 +228,23 @@ public class RobotContainer {
                                   () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
                                    OperatorConstants.RIGHT_X_DEADBAND),
                                   () -> !driverXbox.getRightBumper(),driverXbox,opXbox));
+    m_driverController.rightTrigger(.25).onTrue(new SequentialCommandGroup(
+           new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false).withTimeout(.1),   
+           new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.50),
+           new setIntake(sIntake, 0, false,false).withTimeout(.01),
+           new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)));
 
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));
     //TODO: REMOVE COMMANDS FOR COMP ONLY FOR TESTING WITH ONE CONTROLLER
-    m_driverController.b().onTrue( new ParallelCommandGroup(
-    new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false),
-    new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
-    );
-    m_driverController.y().onTrue(new ParallelCommandGroup(
-      new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
-      new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
-      ));
+    // m_driverController.b().onTrue( new ParallelCommandGroup(
+    // new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false),
+    // new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
+    // );
+    // m_driverController.y().onTrue(new ParallelCommandGroup(
+    //   new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
+    //   new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
+    //   ));
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 

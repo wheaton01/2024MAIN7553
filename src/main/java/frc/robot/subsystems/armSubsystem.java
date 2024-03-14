@@ -49,7 +49,7 @@ public class armSubsystem extends SubsystemBase {
     // armPrPID = new ProfiledPIDController(kP,kI,kD, 
     // new TrapezoidProfile.Constraints(20,40)) ;
     armPrPID.setTolerance(.25);
-    kPUP = 0.024000;//TODO: TUNE PID HERE
+    kPUP = 0.034000;//TODO: TUNE PID HERE
     kIUP = 0.0;
     kDUP = 0.0002;
     armUpPrPID = new PIDController(kPUP,kIUP, kDUP);
@@ -83,6 +83,8 @@ public class armSubsystem extends SubsystemBase {
     //just polls the encoder angle maybe for command stuff idk yet!
     currentPose = angEncoder.getDistance();
     newPose = getAngle();
+    SmartDashboard.putNumber("armOffset", armOffset);
+
     
     if(Math.abs(oldPose)-Math.abs(newPose)>20){
       bErrorFlag = true;
@@ -108,7 +110,6 @@ if(!bRecoveryMode){
     SmartDashboard.putNumber("Desired Pose",setpoint);
     SmartDashboard.putNumber("Current Velocity", armMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("CURRENT ARM POSE",currentPose);
-    SmartDashboard.putNumber("armOffset", armOffset);
 
     // This method will be called once per scheduler run
   
@@ -179,7 +180,7 @@ if(!bRecoveryMode){
   }
   public void upPIDControl() {
      SmartDashboard.putString("ARM PID","UP PID IN USE");
-     armMotor.setSmartCurrentLimit(10);
+     armMotor.setSmartCurrentLimit(7);
      if (!usingLimelight) {
        armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint));
      }
