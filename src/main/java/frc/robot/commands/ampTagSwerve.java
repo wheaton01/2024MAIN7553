@@ -151,9 +151,10 @@ addRequirements(swerve);
 
     public void ampSwerve(double xVelocity,double yVelocity,double angVelocity){
 
-    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed-(distanceController.calculate(swerve.getLimelightY(), 0)), yVelocity* swerve.maximumSpeed-.5*(distanceController.calculate(swerve.getLimelightX(), 0))),
-    angVelocity -(distanceController.calculate(swerve.getLimelightY(), setpoint))* controller.config.maxAngularVelocity+.5*(thetaController.calculate(swerve.getLimelightY(),thetaSetpoint)),
-    driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robzot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed+(distanceController.calculate(swerve.getLimelightX(), 0)),
+     yVelocity* swerve.maximumSpeed+(distanceController.calculate(swerve.getLimelightX(), 0))),
+    angVelocity* controller.config.maxAngularVelocity,
+    false);//may need to do some thinking here as to how i could do both robzot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
  
 
 

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -12,6 +13,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -175,14 +178,9 @@ public class RobotContainer {
     // m_driverController.rightBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false ),
     // new setHaptics(cHaptics, 60).withTimeout(.2)));
     m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false),
-    new setHaptics(cHaptics, 60).withTimeout(.2)));
+    new setHaptics(cHaptics, 80).withTimeout(.25)));
 
-    m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
-    new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false),   
-    new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.0),
-    new setIntake(sIntake, 0, false,false).withTimeout(.01),
-    new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
-      ));
+
     //Turn On intake at kIntakeFeedSpeed until the note sensor reads true
     m_OpController.a().onTrue( new ParallelCommandGroup(
     new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false),
@@ -232,6 +230,12 @@ public class RobotContainer {
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));
     //TODO: REMOVE COMMANDS FOR COMP ONLY FOR TESTING WITH ONE CONTROLLER
+        m_driverController.rightTrigger(.25).onTrue(new SequentialCommandGroup(
+    new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false).withTimeout(0),   
+    new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.0),
+    new setIntake(sIntake, 0, false,false).withTimeout(.01),
+    new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
+      ));
     m_driverController.b().onTrue( new ParallelCommandGroup(
     new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false),
     new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
@@ -269,6 +273,25 @@ public class RobotContainer {
   }
   public void startCameraServer(){
     
+  }
+  public boolean isBlueAlliance(){
+  Optional<Alliance> ally = DriverStation.getAlliance();
+if (ally.isPresent()) {
+    if (ally.get() == Alliance.Red) {
+        return false;
+    }
+    if (ally.get() == Alliance.Blue) {
+        return true;
+      }
+    }
+    return false;
+  
+  }
+
+  public void blueSideOffset(){
+    if(isBlueAlliance()){
+    new InstantCommand(drivebase::blueSideOffset);
+    }
   }
   public void resetAutonMode(){
     new InstantCommand(sIntake::resetAutonMode);
