@@ -335,7 +335,7 @@ public class SwerveSubsystem extends SubsystemBase
     
   }
   public void blueSideOffset(){
-    swerveDrive.setGyroOffset(new Rotation3d(0.0,0.0,180.0));
+    swerveDrive.setGyroOffset(new Rotation3d(0.0,0.0,2*Math.PI));
     System.out.println("GYRO OFFSET TO BLUE SIDE!!");
   }
 

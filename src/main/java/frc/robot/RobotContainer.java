@@ -236,14 +236,15 @@ public class RobotContainer {
     new setIntake(sIntake, 0, false,false).withTimeout(.01),
     new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
       ));
-    m_driverController.b().onTrue( new ParallelCommandGroup(
-    new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false),
-    new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
-    );
-    m_driverController.y().onTrue(new ParallelCommandGroup(
-      new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
-      new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
-      ));
+    // m_driverController.b().onTrue( new ParallelCommandGroup(
+    // new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false),
+    // new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
+    // );
+    // m_driverController.y().onTrue(new ParallelCommandGroup(
+    //   new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
+    //   new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
+    //   ));
+    m_driverController.start().onTrue(new InstantCommand(drivebase::blueSideOffset));
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
