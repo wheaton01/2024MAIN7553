@@ -22,12 +22,6 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "AlignToTarget"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "PrepToShoot"
                       }
                     }
@@ -87,12 +81,6 @@
                       "data": {
                         "name": "PrepToShoot"
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AlignToTarget"
-                      }
                     }
                   ]
                 }
@@ -145,12 +133,6 @@
                 "type": "parallel",
                 "data": {
                   "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AlignToTarget"
-                      }
-                    },
                     {
                       "type": "named",
                       "data": {
@@ -208,12 +190,6 @@
                 "type": "parallel",
                 "data": {
                   "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AlignToTarget"
-                      }
-                    },
                     {
                       "type": "named",
                       "data": {

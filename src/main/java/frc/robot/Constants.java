@@ -110,11 +110,17 @@ public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math
     public static final double kArmGroundFeedPos         = 90.26;
     public static final double kArmAmpPos                = 0;
     public static final double kArmStowPos               = 76.5;
+    public static final double kArmSafeShot               = 67.5;
+    public static final double kArmHoardMode               = 15.0;
+
+
     //SHOOTING CONSTANTS
     public static final double kShootingSpeed            = 1.0;
     public static final double kShooterPIDTolerance      = 300;
     public static final double kSpoolSpeed               = 1.0;
-    public static final double kIdleSpeed                = .35;    
+    public static final double kIdleSpeed                = .8;    
+    public static final double kIdleHigh                =  .8;    
+
     // public static final double kShooterPIDTolerance      = 300;
     // public static final double kSpoolSpeed               = 2500;
     // public static final double kIdleSpeed                = 1000;

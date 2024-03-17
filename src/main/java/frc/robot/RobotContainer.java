@@ -148,7 +148,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( 
       new ParallelCommandGroup(
       new alignToAprilTag(drivebase,1,false), 
-      new setArm(sArm,subsystemConstants.kArmShootingPos, false, true).withTimeout(.5),
+      new setArm(sArm,subsystemConstants.kArmShootingPos-3.0, false, true).withTimeout(.75),
       new setShooter(sShooter, subsystemConstants.kShootingSpeed, false,false).withTimeout(2)
       ), 
       new fireAndFeed(sIntake, sShooter).withTimeout(.5)));
@@ -198,11 +198,19 @@ public class RobotContainer {
       new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
       new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
       ));
-
-
     m_OpController.x().onTrue(new ParallelCommandGroup(
       new setArm(sArm,subsystemConstants.kArmStowPos,false,false),
-      new setShooter(sShooter,subsystemConstants.kShootingSpeed, false, false)));
+      new setShooter(sShooter,subsystemConstants.kIdleHigh, false, false)
+      ));
+    m_OpController.povRight().onTrue(new ParallelCommandGroup(
+      new setArm(sArm,subsystemConstants.kArmHoardMode,false,false),
+      new setShooter(sShooter,subsystemConstants.kShootingSpeed, false, false)
+      ));
+
+    m_OpController.rightBumper().onTrue(new ParallelCommandGroup(
+      new setArm(sArm,subsystemConstants.kArmSafeShot,false,false),
+      new setShooter(sShooter,subsystemConstants.kShootingSpeed, false, false)
+      ));
 
     m_OpController.povDown().onTrue(new InstantCommand(sArm::armoffsetDown));
     m_OpController.povUp().onTrue(new InstantCommand(sArm::armoffsetUP));
