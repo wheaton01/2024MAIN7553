@@ -26,6 +26,7 @@ public class shooterSubsytem extends SubsystemBase {
   RelativeEncoder ebShooter,etShooter;
   public double kP, kI, kD, kIz, kFF, kPl,kIl,kDl, kMaxOutput, kMinOutput, maxRPM;
   public double currentSetpoint,shooterTolerance;
+  public double currentSetpointBot,currentSetpointTop;
   int topMotor, botMotor;
   PIDController shooterPID;
   SparkPIDController tShooterPID,bShooterPID;
@@ -87,14 +88,19 @@ public class shooterSubsytem extends SubsystemBase {
     SmartDashboard.putNumber("BOT SPEED", getBotVelocity());
     SmartDashboard.putNumber("Current Setpoint",currentSetpoint);
     
-    tShooter.set(currentSetpoint);
-    bShooter.set(currentSetpoint);
+    tShooter.set(currentSetpointTop);
+    bShooter.set(currentSetpointBot);
+  }
+  public void diffentialSpeedSet(double topSpeed, double botSpeed){
+    currentSetpointTop = topSpeed;
+    currentSetpointBot = botSpeed;
   }
   
   public void setSpeed(double setpoint){
     //bShooterPID.setReference(setpoint, CANSparkMax.ControlType.kVelocity);
     //tShooterPID.setReference(setpoint, CANSparkMax.ControlType.kVelocity);
-    currentSetpoint = setpoint;
+    currentSetpointTop = setpoint;
+    currentSetpointBot = setpoint;
   }
 
 
