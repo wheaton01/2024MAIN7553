@@ -21,7 +21,7 @@ public class winchSubsystem extends SubsystemBase {
         winchMotor = new CANSparkMax(winchMotorID, CANSparkLowLevel.MotorType.kBrushless);
     winchEncoder = winchMotor.getEncoder();
     winchEncoder.setPosition(0);
-    maxTravel = 225.0;
+    maxTravel = 260.0;
   }
 
   @Override

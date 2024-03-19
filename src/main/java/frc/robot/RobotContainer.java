@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -12,6 +13,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -145,7 +148,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( 
       new ParallelCommandGroup(
       new alignToAprilTag(drivebase,1,false), 
-      new setArm(sArm,subsystemConstants.kArmShootingPos, false, true).withTimeout(.5),
+      new setArm(sArm,subsystemConstants.kArmShootingPos-3.0, false, true).withTimeout(.75),
       new setShooter(sShooter, subsystemConstants.kShootingSpeed, false,false).withTimeout(2)
       ), 
       new fireAndFeed(sIntake, sShooter).withTimeout(.5)));
@@ -175,14 +178,9 @@ public class RobotContainer {
     // m_driverController.rightBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false ),
     // new setHaptics(cHaptics, 60).withTimeout(.2)));
     m_OpController.leftBumper().whileTrue(new SequentialCommandGroup(new setIntake(sIntake, Constants.subsystemConstants.kIntakeSpeed,true,false),
-    new setHaptics(cHaptics, 60).withTimeout(.2)));
+    new setHaptics(cHaptics, 80).withTimeout(.25)));
 
-    // m_OpController.rightBumper().onTrue(new SequentialCommandGroup(
-    // new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false),   
-    // new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.0),
-    // new setIntake(sIntake, 0, false,false).withTimeout(.01),
-    // new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
-    //   ));
+
     //Turn On intake at kIntakeFeedSpeed until the note sensor reads true
     m_OpController.a().onTrue( new ParallelCommandGroup(
     new setArm(sArm,Constants.subsystemConstants.kArmGroundFeedPos,false,false),
@@ -200,11 +198,19 @@ public class RobotContainer {
       new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
       new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
       ));
-
-
     m_OpController.x().onTrue(new ParallelCommandGroup(
       new setArm(sArm,subsystemConstants.kArmStowPos,false,false),
-      new setShooter(sShooter,subsystemConstants.kShootingSpeed, false, false)));
+      new setShooter(sShooter,subsystemConstants.kIdleHigh, false, false)
+      ));
+    m_OpController.povRight().onTrue(new ParallelCommandGroup(
+      new setArm(sArm,subsystemConstants.kArmHoardMode,false,false),
+      new setShooter(sShooter,subsystemConstants.kShootingSpeed, false, false)
+      ));
+
+    m_OpController.rightBumper().onTrue(new ParallelCommandGroup(
+      new setArm(sArm,subsystemConstants.kArmSafeShot,false,false),
+      new setShooter(sShooter,subsystemConstants.kShootingSpeed, false, false)
+      ));
 
     m_OpController.povDown().onTrue(new InstantCommand(sArm::armoffsetDown));
     m_OpController.povUp().onTrue(new InstantCommand(sArm::armoffsetUP));
@@ -228,15 +234,16 @@ public class RobotContainer {
                                   () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
                                    OperatorConstants.RIGHT_X_DEADBAND),
                                   () -> !driverXbox.getRightBumper(),driverXbox,opXbox));
-    m_driverController.rightTrigger(.25).onTrue(new SequentialCommandGroup(
-           new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false).withTimeout(.1),   
-           new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.50),
-           new setIntake(sIntake, 0, false,false).withTimeout(.01),
-           new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)));
 
                                   
     m_driverController.a().onTrue(new zeroGyroCommand(drivebase));
     //TODO: REMOVE COMMANDS FOR COMP ONLY FOR TESTING WITH ONE CONTROLLER
+        m_driverController.rightTrigger(.25).onTrue(new SequentialCommandGroup(
+    new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false).withTimeout(0),   
+    new setIntake(sIntake, subsystemConstants.kIntakeFeedSpeed, false,false).withTimeout(1.0),
+    new setIntake(sIntake, 0, false,false).withTimeout(.01),
+    new setShooter(sShooter, subsystemConstants.kIdleSpeed, false, false).withTimeout(.15)
+      ));
     // m_driverController.b().onTrue( new ParallelCommandGroup(
     // new setArm(sArm,Constants.subsystemConstants.kArmStowPos,false,false),
     // new setShooter(sShooter, subsystemConstants.kIdleSpeed,false, false))
@@ -245,6 +252,7 @@ public class RobotContainer {
     //   new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
     //   new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
     //   ));
+    m_driverController.start().onTrue(new InstantCommand(drivebase::blueSideOffset));
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
@@ -274,6 +282,25 @@ public class RobotContainer {
   }
   public void startCameraServer(){
     
+  }
+  public boolean isBlueAlliance(){
+  Optional<Alliance> ally = DriverStation.getAlliance();
+if (ally.isPresent()) {
+    if (ally.get() == Alliance.Red) {
+        return false;
+    }
+    if (ally.get() == Alliance.Blue) {
+        return true;
+      }
+    }
+    return false;
+  
+  }
+
+  public void blueSideOffset(){
+    if(isBlueAlliance()){
+    new InstantCommand(drivebase::blueSideOffset);
+    }
   }
   public void resetAutonMode(){
     new InstantCommand(sIntake::resetAutonMode);

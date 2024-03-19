@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -47,7 +48,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public        double      maximumSpeed = Units.feetToMeters(16.0);
+  public     final   double      maximumSpeed = Units.feetToMeters(20.0);
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -82,7 +83,6 @@ public class SwerveSubsystem extends SubsystemBase
       throw new RuntimeException(e);
     }
     swerveDrive.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
-
     setupPathPlanner();
 
   }
@@ -116,7 +116,7 @@ public class SwerveSubsystem extends SubsystemBase
                                                           swerveDrive.swerveController.config.headingPIDF.i,
                                                           swerveDrive.swerveController.config.headingPIDF.d),
                                          // Rotation PID constants
-                                         4.5,
+                                         6.0,
                                          // Max module speed, in m/s
                                          swerveDrive.swerveDriveConfiguration.getDriveBaseRadiusMeters(),
                                          // Drive base radius in meters. Distance from robot center to furthest module.
@@ -330,7 +330,13 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void zeroGyro()
   {
+
     swerveDrive.zeroGyro();
+    
+  }
+  public void blueSideOffset(){
+    swerveDrive.setGyroOffset(new Rotation3d(0.0,0.0,2*Math.PI));
+    System.out.println("GYRO OFFSET TO BLUE SIDE!!");
   }
 
   /**

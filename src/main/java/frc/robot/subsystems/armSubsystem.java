@@ -168,7 +168,7 @@ if(!bRecoveryMode){
 
   public void downPIDControl(){
       SmartDashboard.putString("ARM PID","DOWN PID IN USE");
-      armMotor.setSmartCurrentLimit(30);
+      armMotor.setSmartCurrentLimit(40);
 
      if (!usingLimelight) {
        armMotor.set(armPrPID.calculate(-getAngle(),setpoint));
@@ -180,7 +180,7 @@ if(!bRecoveryMode){
   }
   public void upPIDControl() {
      SmartDashboard.putString("ARM PID","UP PID IN USE");
-     armMotor.setSmartCurrentLimit(7);
+     armMotor.setSmartCurrentLimit(6);
      if (!usingLimelight) {
        armMotor.set(armUpPrPID.calculate(-getAngle(),setpoint));
      }

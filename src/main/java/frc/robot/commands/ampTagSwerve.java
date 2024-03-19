@@ -140,4 +140,43 @@ addRequirements(swerve);
     SmartDashboard.putNumber("Limelight ty", ty);
     SmartDashboard.putNumber("Limelight ta", ta);
   }
+  public void speakerSwerve(double xVelocity,double yVelocity,double angVelocity){
+        if (Math.abs(tx)<.1){
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
+                 angVelocity * controller.config.maxAngularVelocity,
+                 driveMode.getAsBoolean());
+  }
+  if (Math.abs(tx)>.1){
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed-(distanceController.calculate(swerve.getLimelightX(), setpoint)), yVelocity* swerve.maximumSpeed),
+    angVelocity * controller.config.maxAngularVelocity-(thetaController.calculate(swerve.getLimelightY(),thetaSetpoint)),
+    driveMode.getAsBoolean());//may need to do some thinking here as to how i could do both robzot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
+  }
+  if (Math.abs(tx)>0.1){
+    opXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
+    driverXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
+  }
+  if(Math.abs(tx)<.1){
+    opXbox.setRumble(RumbleType.kBothRumble,1.0);
+    driverXbox.setRumble(RumbleType.kBothRumble,1.0);
+  }
+  }
+
+    public void ampSwerve(double xVelocity,double yVelocity,double angVelocity){
+
+    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed+(distanceController.calculate(swerve.getLimelightX(), 0)),
+     yVelocity* swerve.maximumSpeed+(distanceController.calculate(swerve.getLimelightX(), 0))),
+    angVelocity* controller.config.maxAngularVelocity,
+    false);//may need to do some thinking here as to how i could do both robzot centric driving for apriltags but also able to keep field centric for controls without affecting alignment HMMM
+ 
+
+
+  if (Math.abs(tx)>0.1){
+    opXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
+    driverXbox.setRumble(RumbleType.kBothRumble,1/(.97*Math.abs(tx)));
+  }
+  if(Math.abs(tx)<.1){
+    opXbox.setRumble(RumbleType.kBothRumble,1.0);
+    driverXbox.setRumble(RumbleType.kBothRumble,1.0);
+  }
+  }
 }
