@@ -37,6 +37,7 @@ import frc.robot.commands.SequentialCommands.spoolShooter;
 import frc.robot.commands.SubsystemCommands.armRecovery;
 import frc.robot.commands.SubsystemCommands.setAnalogIntake;
 import frc.robot.commands.SubsystemCommands.setArm;
+import frc.robot.commands.SubsystemCommands.setDiffShooter;
 import frc.robot.commands.SubsystemCommands.setIntake;
 import frc.robot.commands.SubsystemCommands.setShooter;
 import frc.robot.commands.SubsystemCommands.setWinch;
@@ -142,7 +143,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("AlignToTarget",
     new alignToAprilTag(drivebase,1,false).withTimeout(2.0));
     NamedCommands.registerCommand("PrepToShoot",new ParallelCommandGroup(
-      new setArm(sArm,subsystemConstants.kArmShootingPos, false, true).withTimeout(.5),
+      new setArm(sArm,subsystemConstants.kArmShootingPos-4.0, false, true).withTimeout(.5),
       new setShooter(sShooter, subsystemConstants.kShootingSpeed, false, false)
     ));
     NamedCommands.registerCommand("AlignAndShoot", new SequentialCommandGroup( 
@@ -196,7 +197,7 @@ public class RobotContainer {
 
     m_OpController.y().onTrue(new ParallelCommandGroup(
       new setArm(sArm,Constants.subsystemConstants.kArmAmpPos,false,false),
-      new setShooter(sShooter, Constants.subsystemConstants.kIdleSpeed, false, false)
+      new setDiffShooter(sShooter, .8,-.3, false, false)
       ));
     m_OpController.x().onTrue(new ParallelCommandGroup(
       new setArm(sArm,subsystemConstants.kArmStowPos,false,false),

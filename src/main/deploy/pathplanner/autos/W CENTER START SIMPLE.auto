@@ -172,12 +172,6 @@
                 "data": {
                   "name": "GroundFeed"
                 }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CSS P3"
-                }
               }
             ]
           }
